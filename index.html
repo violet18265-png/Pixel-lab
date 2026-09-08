@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>PIXEL LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#120c1e;
+    --panel:#1b1330;
+    --raised:#251c40;
+    --raised2:#2d2350;
+    --border:#3a2c5c;
+    --violet:#a78bfa;
+    --violet-dim:#7c5fd6;
+    --magenta:#f472b6;
+    --emerald:#34d399;
+    --teal:#5eead4;
+    --amber:#facc15;
+    --text:#ede9fe;
+    --muted:#8b7bab;
+    --font-display:'Press Start 2P', monospace;
+    --font-mono:'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    background:
+      radial-gradient(circle at 8% 6%, rgba(167,139,250,0.14), transparent 40%),
+      radial-gradient(circle at 92% 94%, rgba(244,114,182,0.10), transparent 45%),
+      var(--void);
+    color:var(--text);
+    font-family:var(--font-mono);
+    overflow:hidden;
+  }
+  button, input, textarea, select{ font-family:var(--font-mono); }
+  :focus-visible{ outline:2px solid var(--violet); outline-offset:2px; }
+  .hidden{ display:none !important; }
+
+  .app{ height:100vh; display:flex; flex-direction:column; }
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 16px;
+    border-bottom:1px solid var(--border);
+    background:rgba(27,19,48,0.7);
+  }
+  .brand{ font-family:var(--font-display); font-size:13px; letter-spacing:1px; color:var(--text); }
+  .brand span{ color:var(--violet); }
+  .topbar-status{ font-size:11px; color:var(--muted); }
+
+  /* ---------- split layout ---------- */
+  .split{ flex:1; min-height:0; display:flex; flex-direction:row; }
+  .panel{ background:var(--panel); min-width:0; display:flex; flex-direction:column; }
+
+  .devpanel{ flex:0 0 40%; border-right:1px solid var(--border); }
+  .gamepanel{ flex:1 1 auto; align-items:center; padding:14px 10px 10px; gap:10px; overflow-y:auto; }
+
+  .divider{
+    flex:0 0 6px; cursor:col-resize; background:var(--border);
+    position:relative; touch-action:none;
+  }
+  .divider::after{
+    content:''; position:absolute; top:50%; left:50%; width:3px; height:34px;
+    transform:translate(-50%,-50%); background:var(--violet); border-radius:2px; opacity:0.6;
+  }
+  .divider:hover::after{ opacity:1; box-shadow:0 0 8px var(--violet); }
+
+  /* ---------- dev tools ---------- */
+  .tabs{ flex:0 0 auto; display:flex; border-bottom:1px solid var(--border); }
+  .tab{
+    flex:1; background:none; border:none; color:var(--muted); padding:10px 6px;
+    font-size:12px; cursor:pointer; border-bottom:2px solid transparent;
+  }
+  .tab.active{ color:var(--text); border-bottom-color:var(--violet); }
+  .tab:hover{ color:var(--text); }
+
+  .tabpanel{ flex:1; min-height:0; display:flex; flex-direction:column; overflow:hidden; }
+
+  .term-output{
+    flex:1; overflow-y:auto; padding:10px 12px; font-size:12px; line-height:1.5;
+  }
+  .term-line{ white-space:pre-wrap; word-break:break-word; margin-bottom:2px; }
+  .term-echo{ color:var(--violet); }
+  .term-info{ color:var(--muted); }
+  .term-success{ color:var(--emerald); }
+  .term-error{ color:var(--magenta); }
+  .term-result{ color:var(--teal); }
+
+  .term-inputrow{
+    flex:0 0 auto; display:flex; align-items:center; gap:8px;
+    border-top:1px solid var(--border); padding:8px 12px;
+    background:rgba(0,0,0,0.15);
+  }
+  .term-inputrow .prompt{ color:var(--emerald); font-weight:600; }
+  .term-inputrow input{
+    flex:1; background:none; border:none; color:var(--text); font-size:13px;
+  }
+  .term-inputrow input:focus{ outline:none; }
+
+  .tab-toolbar{ flex:0 0 auto; padding:10px 12px 4px; }
+  .list{ flex:1; min-height:0; overflow-y:auto; padding:8px 12px 16px; }
+  .empty{ color:var(--muted); font-size:12px; }
+
+  .list-item{
+    border:1px solid var(--border); border-radius:6px; padding:8px 10px;
+    margin-bottom:8px; background:rgba(37,28,64,0.4);
+  }
+  .list-item-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .list-item-name{ font-size:12px; color:var(--text); word-break:break-all; }
+  .list-item-size{ font-size:10px; color:var(--muted); white-space:nowrap; }
+  .tag{
+    font-size:9px; color:var(--muted); border:1px solid var(--border);
+    border-radius:10px; padding:1px 7px;
+  }
+  .list-item-actions{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .list-item-actions button{
+    font-size:11px; padding:5px 9px; border-radius:4px; border:1px solid var(--border);
+    background:var(--raised); color:var(--text); cursor:pointer;
+  }
+  .list-item-actions button:hover{ background:var(--raised2); }
+  .list-item-actions button.accent{ border-color:var(--violet); color:var(--violet); }
+  .list-item-actions button.danger{ border-color:var(--magenta); color:var(--magenta); }
+  .list-item-actions button[disabled]{ opacity:0.35; cursor:not-allowed; }
+  .switch{ font-size:11px; display:flex; align-items:center; gap:5px; color:var(--muted); }
+
+  .btn-accent{
+    background:linear-gradient(180deg, var(--violet), var(--violet-dim));
+    color:#150e26; border:none; border-radius:4px; padding:7px 14px;
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .btn-ghost{
+    background:none; border:1px solid var(--border); color:var(--muted);
+    border-radius:4px; padding:7px 14px; font-size:12px; cursor:pointer;
+  }
+
+  /* ---------- game panel ---------- */
+  .game-header{
+    width:100%; max-width:260px; display:flex; flex-direction:column; gap:8px; flex:0 0 auto;
+  }
+  .game-header .row1{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .game-header select{
+    background:var(--raised); color:var(--text); border:1px solid var(--border);
+    border-radius:4px; padding:5px 7px; font-size:11px;
+  }
+  .stats{ display:flex; gap:14px; }
+  .stats div{ display:flex; flex-direction:column; align-items:center; }
+  .stats span{ font-size:9px; color:var(--muted); letter-spacing:0.5px; }
+  .stats b{ font-size:13px; color:var(--violet); font-weight:600; }
+  #nextCanvas{ border:1px solid var(--border); border-radius:4px; background:#0d0817; }
+
+  .canvas-wrap{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+  #gameCanvas{
+    border:2px solid var(--violet-dim); border-radius:4px; background:#0d0817;
+    box-shadow:0 0 24px rgba(167,139,250,0.25);
+    image-rendering:pixelated;
+  }
+
+  .touchpad{
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center; gap:22px;
+    flex-wrap:wrap; padding:6px 4px 2px; transition:opacity .2s;
+  }
+  .touchpad.inactive{ opacity:0.3; filter:grayscale(1); pointer-events:none; }
+  .dpad{
+    display:grid; grid-template-columns:42px 42px 42px; grid-template-rows:42px 42px 42px;
+    gap:3px;
+  }
+  .dp{
+    background:var(--raised); border:1px solid var(--border); color:var(--text);
+    border-radius:6px; font-size:13px; cursor:pointer; touch-action:none;
+  }
+  .dp:active{ background:var(--violet); color:#150e26; }
+  .dp-up{ grid-column:2; grid-row:1; }
+  .dp-left{ grid-column:1; grid-row:2; }
+  .dp-right{ grid-column:3; grid-row:2; }
+  .dp-down{ grid-column:2; grid-row:3; }
+
+  .abbuttons{ display:flex; gap:10px; align-items:center; }
+  .btn-round{
+    width:50px; height:50px; border-radius:50%; border:1px solid var(--border);
+    font-family:var(--font-display); font-size:11px; cursor:pointer; touch-action:none;
+    color:#0d0817;
+  }
+  .btn-a{ background:var(--emerald); }
+  .btn-b{ background:var(--magenta); }
+  .btn-round:active{ filter:brightness(1.2); transform:scale(0.94); }
+
+  .btn-start{
+    background:var(--raised); border:1px solid var(--border); color:var(--muted);
+    border-radius:14px; padding:6px 16px; font-size:10px; cursor:pointer; touch-action:none;
+    letter-spacing:1px;
+  }
+  .btn-start:active{ color:var(--text); border-color:var(--violet); }
+
+  /* ---------- modal ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(6,3,14,0.72); display:flex;
+    align-items:center; justify-content:center; z-index:50; padding:16px;
+  }
+  .modal{
+    background:var(--panel); border:1px solid var(--border); border-radius:8px;
+    width:100%; max-width:480px; max-height:86vh; overflow-y:auto; padding:18px;
+  }
+  .modal h3{ margin:0 0 14px; font-size:14px; color:var(--violet); }
+  .modal label{ display:block; font-size:11px; color:var(--muted); margin-bottom:12px; }
+  .modal input, .modal textarea{
+    display:block; width:100%; margin-top:5px; background:var(--raised);
+    border:1px solid var(--border); border-radius:4px; color:var(--text);
+    padding:7px 9px; font-size:12px; resize:vertical;
+  }
+  .modal textarea{ min-height:220px; line-height:1.5; }
+  .modal-error{ font-size:11px; color:var(--magenta); margin:-4px 0 12px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:8px; }
+
+  /* ---------- responsive: stack on narrow screens ---------- */
+  @media (max-width:760px){
+    .split{ flex-direction:column; }
+    .devpanel{ flex-basis:44% !important; border-right:none; border-bottom:1px solid var(--border); }
+    .gamepanel{ flex-basis:56% !important; }
+    .divider{ display:none; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--raised2); border-radius:4px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">PIXEL <span>LAB</span></div>
+    <div class="topbar-status" id="statusLine">memuat…</div>
+  </header>
+
+  <main class="split" id="split">
+
+    <section class="panel devpanel" id="devPanel">
+      <nav class="tabs">
+        <button class="tab active" data-tab="terminal" type="button">Terminal</button>
+        <button class="tab" data-tab="files" type="button">Files</button>
+        <button class="tab" data-tab="controllers" type="button">Controllers</button>
+      </nav>
+
+      <div class="tabpanel" id="tab-terminal">
+        <div class="term-output" id="termOutput"></div>
+        <form class="term-inputrow" id="termForm">
+          <span class="prompt">&gt;</span>
+          <input id="termInput" autocomplete="off" spellcheck="false" placeholder="ketik 'help' atau kode JavaScript…" />
+        </form>
+      </div>
+
+      <div class="tabpanel hidden" id="tab-files">
+        <div class="tab-toolbar"><button id="addFileBtn" class="btn-accent" type="button">+ File</button></div>
+        <div class="list" id="filesList"></div>
+      </div>
+
+      <div class="tabpanel hidden" id="tab-controllers">
+        <div class="tab-toolbar"><button id="addControllerBtn" class="btn-accent" type="button">+ Controller</button></div>
+        <div class="list" id="controllersList"></div>
+      </div>
+    </section>
+
+    <div class="divider" id="divider" aria-hidden="true"></div>
+
+    <section class="panel gamepanel" id="gamePanel">
+      <div class="game-header">
+        <div class="row1">
+          <select id="gameSelect"></select>
+          <canvas id="nextCanvas" width="60" height="60"></canvas>
+        </div>
+        <div class="stats">
+          <div><span>SCORE</span><b id="statScore">0</b></div>
+          <div><span>LEVEL</span><b id="statLevel">1</b></div>
+          <div><span>LINES</span><b id="statLines">0</b></div>
+        </div>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas" width="240" height="480"></canvas>
+      </div>
+
+      <div class="touchpad" id="touchpad">
+        <div class="dpad">
+          <button data-action="up" class="dp dp-up" type="button">▲</button>
+          <button data-action="left" class="dp dp-left" type="button">◀</button>
+          <button data-action="right" class="dp dp-right" type="button">▶</button>
+          <button data-action="down" class="dp dp-down" type="button">▼</button>
+        </div>
+        <div class="abbuttons">
+          <button data-action="b" class="btn-round btn-b" type="button">B</button>
+          <button data-action="a" class="btn-round btn-a" type="button">A</button>
+        </div>
+        <button data-action="start" class="btn-start" type="button">II START</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- file starter: game kedua, contoh mengganti Tetris sepenuhnya -->
+<script type="text/plain" id="starter-snake">
+// snake.js — contoh game kedua untuk PIXEL LAB
+// Jalankan file ini (tombol "Jalankan"), lalu pilih "Snake" di dropdown Game
+// di panel kanan atas untuk menggantikan Tetris sepenuhnya.
+PL.registerGame('snake', {
+  name: 'Snake',
+  width: 240,
+  height: 480,
+  init(api){
+    this.api = api;
+    this.cell = 24;
+    this.cols = 10;
+    this.rows = 20;
+    this.snake = [{x:4,y:10},{x:3,y:10},{x:2,y:10}];
+    this.dir = {x:1,y:0};
+    this.nextDir = {x:1,y:0};
+    this.food = this.randomFood();
+    this.score = 0;
+    this.tickTime = 140;
+    this.timer = 0;
+    this.gameOver = false;
+    api.setStats({score:0, level:'-', lines:'-'});
+    api.log('Snake siap. Gunakan D-Pad untuk bergerak.', 'info');
+  },
+  randomFood(){
+    let pos;
+    do {
+      pos = {x:(Math.random()*this.cols)|0, y:(Math.random()*this.rows)|0};
+    } while (this.snake && this.snake.some(s=>s.x===pos.x && s.y===pos.y));
+    return pos;
+  },
+  onAction(action){
+    if (this.gameOver){ if (action==='b') this.init(this.api); return; }
+    const d = this.dir;
+    if (action==='up' && d.y===0) this.nextDir={x:0,y:-1};
+    if (action==='down' && d.y===0) this.nextDir={x:0,y:1};
+    if (action==='left' && d.x===0) this.nextDir={x:-1,y:0};
+    if (action==='right' && d.x===0) this.nextDir={x:1,y:0};
+  },
+  update(dt){
+    if (this.gameOver) return;
+    this.timer += dt;
+    if (this.timer < this.tickTime) return;
+    this.timer = 0;
+    this.dir = this.nextDir;
+    const head = {x:this.snake[0].x+this.dir.x, y:this.snake[0].y+this.dir.y};
+    head.x = (head.x+this.cols)%this.cols;
+    head.y = (head.y+this.rows)%this.rows;
+    if (this.snake.some(s=>s.x===head.x && s.y===head.y)){
+      this.gameOver = true;
+      this.api.log('Snake mati. Skor akhir: '+this.score, 'error');
+      return;
+    }
+    this.snake.unshift(head);
+    if (head.x===this.food.x && head.y===this.food.y){
+      this.score += 10;
+      this.food = this.randomFood();
+      this.tickTime = Math.max(70, this.tickTime-2);
+      this.api.setStats({score:this.score, level:'-', lines:'-'});
+    } else {
+      this.snake.pop();
+    }
+  },
+  render(ctx, canvas){
+    ctx.fillStyle = '#0d0817';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#f472b6';
+    ctx.fillRect(this.food.x*this.cell+2, this.food.y*this.cell+2, this.cell-4, this.cell-4);
+    this.snake.forEach((s,i)=>{
+      ctx.fillStyle = i===0 ? '#34d399' : '#5eead4';
+      ctx.fillRect(s.x*this.cell+1, s.y*this.cell+1, this.cell-2, this.cell-2);
+    });
+    if (this.gameOver){
+      ctx.fillStyle = 'rgba(10,6,20,0.75)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#f472b6';
+      ctx.font = '14px "Press Start 2P", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2-10);
+      ctx.font = '9px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#ede9fe';
+      ctx.fillText('tekan B untuk ulang', canvas.width/2, canvas.height/2+16);
+    }
+  }
+});
+PL.log('Game "snake" terdaftar. Pilih dari dropdown Game untuk main.', 'success');
+</script>
+
+<!-- file starter: contoh utak-atik game aktif secara langsung -->
+<script type="text/plain" id="starter-colors">
+// crazy-colors.js — contoh utak-atik (tinker) game yang sedang aktif
+// Jalankan file ini SAAT Tetris berjalan untuk melihat efeknya secara langsung.
+if (!game){
+  PL.log('Tidak ada game aktif.', 'error');
+} else {
+  game.drawCell = function(ctx, c, r, color){
+    if (r < 0) return;
+    const hue = (Date.now()/8 + c*22 + r*12) % 360;
+    ctx.fillStyle = 'hsl(' + hue + ', 90%, 65%)';
+    ctx.fillRect(c*this.CELL+1, r*this.CELL+1, this.CELL-2, this.CELL-2);
+  };
+  PL.log('Mode warna pelangi aktif di papan!', 'success');
+}
+</script>
+
+<!-- template untuk file game baru -->
+<script type="text/plain" id="template-game">
+// Definisikan game baru lalu daftarkan lewat PL.registerGame(key, definisi).
+// "key" harus sama dengan nama file tanpa ".js" agar tombol
+// "Muat sbg Game" otomatis aktif setelah file ini dijalankan.
+PL.registerGame('gameBaru', {
+  name: 'Game Baru',
+  width: 240,
+  height: 480,
+  init(api){
+    this.api = api;
+    api.setStats({score:0, level:'-', lines:'-'});
+    api.log('Game baru siap.', 'info');
+  },
+  onAction(action){
+    // action bisa berupa: 'up' 'down' 'left' 'right' 'a' 'b' 'start'
+  },
+  update(dt){
+    // dt = milidetik sejak frame sebelumnya
+  },
+  render(ctx, canvas){
+    ctx.fillStyle = '#0d0817';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#a78bfa';
+    ctx.font = '10px monospace';
+    ctx.fillText('Halo dari game baru!', 20, 40);
+  }
+});
+</script>
+
+<!-- template untuk controller baru -->
+<script type="text/plain" id="template-controller">
+// Object controller wajib punya method attach(dispatch) dan detach().
+// Panggil dispatch(action) dengan salah satu:
+// 'up' 'down' 'left' 'right' 'a' 'b' 'start'
+{
+  name: 'Controller Baru',
+  attach(dispatch){
+    this._handler = (e) => {
+      if (e.key === 'g') dispatch('a');
+    };
+    window.addEventListener('keydown', this._handler);
+  },
+  detach(){
+    window.removeEventListener('keydown', this._handler);
+  }
+}
+</script>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ======================= TETRIS DATA ======================= */
+  const SHAPES = {
+    I:[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+    O:[[1,1],[1,1]],
+    T:[[0,1,0],[1,1,1],[0,0,0]],
+    S:[[0,1,1],[1,1,0],[0,0,0]],
+    Z:[[1,1,0],[0,1,1],[0,0,0]],
+    J:[[1,0,0],[1,1,1],[0,0,0]],
+    L:[[0,0,1],[1,1,1],[0,0,0]]
+  };
+  const COLORS = { I:'#5eead4', O:'#facc15', T:'#c084fc', S:'#4ade80', Z:'#f472b6', J:'#818cf8', L:'#fb923c' };
+
+  function rotateMatrixCW(m){
+    const n = m.length;
+    const res = Array.from({length:n}, ()=>Array(n).fill(0));
+    for (let r=0;r<n;r++) for (let c=0;c<n;c++) res[c][n-1-r] = m[r][c];
+    return res;
+  }
+
+  /* ======================= ENGINE CORE ======================= */
+  const PixelLab = {
+    games:{}, controllers:{}, files:{},
+    activeGame:null, activeGameName:null, paused:false,
+    canvas:null, ctx:null, nextCanvas:null, nextCtx:null, api:null,
+
+    registerGame(name, def){
+      this.games[name] = def;
+      if (typeof updateGameSelector === 'function') updateGameSelector();
+    },
+
+    loadGame(name){
+      const def = this.games[name];
+      if (!def){ this.log('Game "'+name+'" tidak ditemukan.', 'error'); return; }
+      this.activeGameName = name;
+      this.canvas.width = def.width || 240;
+      this.canvas.height = def.height || 480;
+      this.paused = false;
+      this.activeGame = def;
+      if (def.init) def.init(this.api);
+      if (typeof updateGameSelector === 'function') updateGameSelector();
+      setStatus((def.name||name) + ' • berjalan');
+    },
+
+    registerController(id, def, active){
+      this.controllers[id] = def;
+      def.active = false;
+      if (active) this.toggleController(id, true);
+      if (typeof renderControllersList === 'function') renderControllersList();
+    },
+
+    toggleController(id, on){
+      const c = this.controllers[id];
+      if (!c) return;
+      if (on && !c.active){ c.attach(this.dispatch.bind(this)); c.active = true; }
+      else if (!on && c.active){ c.detach(); c.active = false; }
+      if (typeof renderControllersList === 'function') renderControllersList();
+    },
+
+    removeController(id){
+      const c = this.controllers[id];
+      if (!c || c.builtin) return;
+      if (c.active) c.detach();
+      delete this.controllers[id];
+      if (typeof renderControllersList === 'function') renderControllersList();
+    },
+
+    dispatch(action){
+      if (action === 'start'){
+        this.paused = !this.paused;
+        setStatus((this.activeGame && (this.activeGame.name||this.activeGameName)) + (this.paused ? ' • dijeda' : ' • berjalan'));
+        return;
+      }
+      if (this.paused) return;
+      if (this.activeGame && this.activeGame.onAction) this.activeGame.onAction(action);
+    },
+
+    log(msg, type){
+      if (typeof termPrint === 'function') termPrint(String(msg), type || 'info');
+    }
+  };
+
+  function setStatus(text){
+    const el = document.getElementById('statusLine');
+    if (el) el.textContent = text;
+  }
+
+  /* ======================= TETRIS GAME ======================= */
+  const TetrisGame = {
+    name:'Tetris',
+    width:240, height:480,
+    COLS:10, ROWS:20, CELL:24,
+
+    init(api){
+      this.api = api;
+      this.board = Array.from({length:this.ROWS}, ()=>Array(this.COLS).fill(null));
+      this.bag = [];
+      this.score = 0; this.level = 1; this.lines = 0;
+      this.dropInterval = 1000; this.dropTimer = 0;
+      this.gameOver = false;
+      this.nextType = this.drawBag();
+      this.spawn();
+      api.setStats({score:0, level:1, lines:0});
+      api.log('Tetris siap. Gunakan D-Pad / panah untuk bermain.', 'info');
+    },
+
+    drawBag(){
+      if (this.bag.length === 0){
+        const arr = ['I','O','T','S','Z','J','L'];
+        for (let i=arr.length-1;i>0;i--){
+          const j = (Math.random()*(i+1))|0;
+          const tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+        }
+        this.bag = arr;
+      }
+      return this.bag.pop();
+    },
+
+    spawn(){
+      const type = this.nextType || this.drawBag();
+      this.nextType = this.drawBag();
+      const shape = SHAPES[type].map(row=>row.slice());
+      const n = shape.length;
+      this.current = { type, shape, color:COLORS[type], pr:0, pc:Math.floor((this.COLS-n)/2) };
+      if (this.collides(this.current.shape, this.current.pr, this.current.pc)){
+        this.gameOver = true;
+        this.api.log('Game over. Skor akhir: '+this.score, 'error');
+      }
+    },
+
+    collides(shape, pr, pc){
+      for (let r=0;r<shape.length;r++){
+        for (let c=0;c<shape.length;c++){
+          if (!shape[r][c]) continue;
+          const br = pr+r, bc = pc+c;
+          if (bc<0 || bc>=this.COLS || br>=this.ROWS) return true;
+          if (br>=0 && this.board[br][bc]) return true;
+        }
+      }
+      return false;
+    },
+
+    tryMove(dr,dc){
+      const p = this.current;
+      if (!this.collides(p.shape, p.pr+dr, p.pc+dc)){ p.pr+=dr; p.pc+=dc; return true; }
+      return false;
+    },
+
+    lock(){
+      const p = this.current;
+      for (let r=0;r<p.shape.length;r++){
+        for (let c=0;c<p.shape.length;c++){
+          if (p.shape[r][c]){
+            const br=p.pr+r, bc=p.pc+c;
+            if (br>=0 && br<this.ROWS) this.board[br][bc] = p.color;
+          }
+        }
+      }
+      this.clearLines();
+      this.spawn();
+    },
+
+    clearLines(){
+      const kept = this.board.filter(row=>row.some(cell=>!cell));
+      const cleared = this.ROWS - kept.length;
+      if (cleared>0){
+        const newRows = Array.from({length:cleared}, ()=>Array(this.COLS).fill(null));
+        this.board = newRows.concat(kept);
+        const table = [0,100,300,500,800];
+        const points = (table[cleared]||800) * this.level;
+        this.score += points;
+        this.lines += cleared;
+        const newLevel = 1 + Math.floor(this.lines/10);
+        if (newLevel !== this.level){ this.level = newLevel; this.api.log('Naik ke level '+this.level, 'success'); }
+        this.dropInterval = Math.max(120, 1000-(this.level-1)*75);
+      }
+      this.api.setStats({score:this.score, level:this.level, lines:this.lines});
+    },
+
+    rotate(){
+      const p = this.current;
+      const rotated = rotateMatrixCW(p.shape);
+      const kicks = [0,-1,1,-2,2];
+      for (let i=0;i<kicks.length;i++){
+        const k = kicks[i];
+        if (!this.collides(rotated, p.pr, p.pc+k)){ p.shape = rotated; p.pc += k; return; }
+      }
+    },
+
+    hardDrop(){
+      let dist = 0;
+      while (this.tryMove(1,0)) dist++;
+      this.score += dist*2;
+      this.lock();
+    },
+
+    onAction(action){
+      if (this.gameOver){ if (action==='b') this.init(this.api); return; }
+      switch(action){
+        case 'left': this.tryMove(0,-1); break;
+        case 'right': this.tryMove(0,1); break;
+        case 'down':
+          if (this.tryMove(1,0)){ this.score++; this.api.setStats({score:this.score, level:this.level, lines:this.lines}); }
+          else { this.lock(); }
+          this.dropTimer = 0;
+          break;
+        case 'up': this.rotate(); break;
+        case 'a': this.hardDrop(); break;
+      }
+    },
+
+    update(dt){
+      if (this.gameOver) return;
+      this.dropTimer += dt;
+      if (this.dropTimer >= this.dropInterval){
+        this.dropTimer = 0;
+        if (!this.tryMove(1,0)) this.lock();
+      }
+    },
+
+    drawCell(ctx,c,r,color){
+      if (r<0) return;
+      ctx.fillStyle = color;
+      ctx.fillRect(c*this.CELL+1, r*this.CELL+1, this.CELL-2, this.CELL-2);
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fillRect(c*this.CELL+1, r*this.CELL+1, this.CELL-2, 4);
+    },
+
+    render(ctx, canvas){
+      ctx.fillStyle = '#0d0817';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      ctx.strokeStyle = 'rgba(167,139,250,0.08)';
+      for (let c=0;c<=this.COLS;c++){ ctx.beginPath(); ctx.moveTo(c*this.CELL,0); ctx.lineTo(c*this.CELL,this.ROWS*this.CELL); ctx.stroke(); }
+      for (let r=0;r<=this.ROWS;r++){ ctx.beginPath(); ctx.moveTo(0,r*this.CELL); ctx.lineTo(this.COLS*this.CELL,r*this.CELL); ctx.stroke(); }
+
+      for (let r=0;r<this.ROWS;r++) for (let c=0;c<this.COLS;c++){ if (this.board[r][c]) this.drawCell(ctx,c,r,this.board[r][c]); }
+
+      if (this.current && !this.gameOver){
+        let gpr = this.current.pr;
+        while (!this.collides(this.current.shape, gpr+1, this.current.pc)) gpr++;
+        ctx.globalAlpha = 0.25;
+        for (let r=0;r<this.current.shape.length;r++) for (let c=0;c<this.current.shape.length;c++){
+          if (this.current.shape[r][c]) this.drawCell(ctx, this.current.pc+c, gpr+r, this.current.color);
+        }
+        ctx.globalAlpha = 1;
+        for (let r=0;r<this.current.shape.length;r++) for (let c=0;c<this.current.shape.length;c++){
+          if (this.current.shape[r][c]) this.drawCell(ctx, this.current.pc+c, this.current.pr+r, this.current.color);
+        }
+      }
+
+      if (this.gameOver){
+        ctx.fillStyle = 'rgba(10,6,20,0.75)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = '#f472b6';
+        ctx.font = '14px "Press Start 2P", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2-10);
+        ctx.font = '9px "IBM Plex Mono", monospace';
+        ctx.fillStyle = '#ede9fe';
+        ctx.fillText('tekan B untuk ulang', canvas.width/2, canvas.height/2+16);
+      }
+
+      if (this.api.nextCtx){
+        const nctx = this.api.nextCtx, ncanvas = this.api.nextCanvas;
+        nctx.fillStyle = '#0d0817'; nctx.fillRect(0,0,ncanvas.width,ncanvas.height);
+        const shape = SHAPES[this.nextType];
+        const cell = 14;
+        const offsetX = (ncanvas.width - shape.length*cell)/2;
+        const offsetY = (ncanvas.height - shape.length*cell)/2;
+        for (let r=0;r<shape.length;r++) for (let c=0;c<shape.length;c++){
+          if (shape[r][c]){
+            nctx.fillStyle = COLORS[this.nextType];
+            nctx.fillRect(offsetX+c*cell+1, offsetY+r*cell+1, cell-2, cell-2);
+          }
+        }
+      }
+    }
+  };
+
+  /* ======================= CONTROLLERS ======================= */
+  const KeyboardController = {
+    name:'Keyboard (PC)', builtin:true,
+    attach(dispatch){
+      this._map = {
+        ArrowUp:'up', KeyW:'up',
+        ArrowDown:'down', KeyS:'down',
+        ArrowLeft:'left', KeyA:'left',
+        ArrowRight:'right', KeyD:'right',
+        Space:'a', KeyZ:'a',
+        ShiftLeft:'b', ShiftRight:'b', KeyX:'b',
+        Enter:'start', KeyP:'start'
+      };
+      this._handler = (e)=>{
+        const tag = e.target && e.target.tagName;
+        if (tag==='INPUT' || tag==='TEXTAREA') return;
+        const action = this._map[e.code];
+        if (action){ e.preventDefault(); dispatch(action); }
+      };
+      window.addEventListener('keydown', this._handler);
+    },
+    detach(){ window.removeEventListener('keydown', this._handler); }
+  };
+
+  const TouchController = {
+    name:'Touch Buttons (Mobile)', builtin:true,
+    attach(dispatch){
+      this._buttons = document.querySelectorAll('[data-action]');
+      this._handler = (e)=>{
+        e.preventDefault();
+        dispatch(e.currentTarget.getAttribute('data-action'));
+      };
+      this._buttons.forEach(b=>b.addEventListener('pointerdown', this._handler));
+      const pad = document.getElementById('touchpad');
+      if (pad) pad.classList.remove('inactive');
+    },
+    detach(){
+      this._buttons.forEach(b=>b.removeEventListener('pointerdown', this._handler));
+      const pad = document.getElementById('touchpad');
+      if (pad) pad.classList.add('inactive');
+    }
+  };
+
+  const GamepadController = {
+    name:'Gamepad (Beta)', builtin:true,
+    attach(dispatch){
+      this._prev = {};
+      const map = {0:'a',1:'b',9:'start',12:'up',13:'down',14:'left',15:'right'};
+      const poll = ()=>{
+        const pads = (navigator.getGamepads ? navigator.getGamepads() : []) || [];
+        const gp = pads[0];
+        if (gp){
+          Object.keys(map).forEach(i=>{
+            const btn = gp.buttons[i];
+            const pressed = !!(btn && btn.pressed);
+            if (pressed && !this._prev[i]) dispatch(map[i]);
+            this._prev[i] = pressed;
+          });
+        }
+        this._raf = requestAnimationFrame(poll);
+      };
+      this._raf = requestAnimationFrame(poll);
+    },
+    detach(){ if (this._raf) cancelAnimationFrame(this._raf); }
+  };
+
+  /* ======================= TERMINAL / EVAL ======================= */
+  function runCode(code){
+    const PL = PixelLab;
+    const game = PixelLab.activeGame;
+    try {
+      const result = eval(code);
+      return { ok:true, result:result };
+    } catch(err){
+      return { ok:false, error: (err && err.message) || String(err) };
+    }
+  }
+
+  function termPrint(text, type){
+    const out = document.getElementById('termOutput');
+    if (!out) return;
+    const div = document.createElement('div');
+    div.className = 'term-line term-' + (type||'info');
+    div.textContent = text;
+    out.appendChild(div);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  const BUILTINS = {
+    help(){
+      termPrint([
+        'Perintah bawaan:',
+        '  help              - tampilkan bantuan ini',
+        '  ls                - daftar file',
+        '  games             - daftar game terdaftar',
+        '  controllers       - daftar controller',
+        '  load <nama>       - pindah ke game tertentu',
+        '  run <nama file>   - jalankan file',
+        '  restart           - mulai ulang game aktif',
+        '  clear             - bersihkan terminal',
+        '',
+        'Selain perintah di atas, ketik kode JavaScript apa pun.',
+        'Variabel tersedia: PL (engine), game (game aktif).'
+      ].join('\n'), 'info');
+    },
+    ls(){
+      const names = Object.keys(PixelLab.files);
+      termPrint(names.length ? names.join('\n') : '(belum ada file)', 'info');
+    },
+    games(){
+      const names = Object.keys(PixelLab.games);
+      termPrint(names.map(n=>(n===PixelLab.activeGameName?'* ':'  ')+n).join('\n'), 'info');
+    },
+    controllers(){
+      const ids = Object.keys(PixelLab.controllers);
+      termPrint(ids.map(id=>{
+        const c = PixelLab.controllers[id];
+        return (c.active?'[x] ':'[ ] ') + (c.name||id);
+      }).join('\n'), 'info');
+    },
+    clear(){ const o=document.getElementById('termOutput'); if (o) o.innerHTML=''; },
+    restart(){
+      if (PixelLab.activeGame && PixelLab.activeGame.init){
+        PixelLab.activeGame.init(PixelLab.api);
+        termPrint('Game di-restart.', 'success');
+      }
+    },
+    load(code){
+      const name = code.split(' ').slice(1).join(' ').trim();
+      if (!name){ termPrint('Gunakan: load <nama game>', 'error'); return; }
+      PixelLab.loadGame(name);
+    },
+    run(code){
+      const name = code.split(' ').slice(1).join(' ').trim();
+      const src = PixelLab.files[name];
+      if (!src){ termPrint('File tidak ditemukan: '+name, 'error'); return; }
+      const res = runCode(src);
+      if (!res.ok) termPrint('Error di '+name+': '+res.error, 'error');
+      else termPrint('File '+name+' dijalankan.', 'success');
+      if (typeof renderFilesList === 'function') renderFilesList();
+    }
+  };
+
+  function handleTerminalLine(raw){
+    const code = raw.trim();
+    termPrint('> '+code, 'echo');
+    const cmdName = code.split(' ')[0];
+    if (BUILTINS[cmdName]){ BUILTINS[cmdName](code); return; }
+    const res = runCode(code);
+    if (!res.ok){ termPrint('Error: '+res.error, 'error'); return; }
+    if (res.result !== undefined){
+      let text;
+      try { text = (typeof res.result === 'object' && res.result !== null) ? JSON.stringify(res.result) : String(res.result); }
+      catch(e){ text = String(res.result); }
+      termPrint('=> '+text, 'result');
+    }
+  }
+
+  function setupTerminal(){
+    const form = document.getElementById('termForm');
+    const input = document.getElementById('termInput');
+    let history = []; let hIndex = 0;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      const code = input.value;
+      input.value = '';
+      if (!code.trim()) return;
+      history.push(code); hIndex = history.length;
+      handleTerminalLine(code);
+    });
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowUp'){
+        if (hIndex > 0){ hIndex--; input.value = history[hIndex] || ''; }
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown'){
+        if (hIndex < history.length){ hIndex++; input.value = history[hIndex] || ''; }
+        e.preventDefault();
+      }
+    });
+  }
+
+  /* ======================= HELPERS ======================= */
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+
+  function openModal(html){
+    document.getElementById('modalBox').innerHTML = html;
+    document.getElementById('modalBackdrop').classList.remove('hidden');
+  }
+  function closeModal(){
+    document.getElementById('modalBackdrop').classList.add('hidden');
+    document.getElementById('modalBox').innerHTML = '';
+  }
+  function showModalError(id, msg){
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+  }
+
+  /* ======================= FILES UI ======================= */
+  function renderFilesList(){
+    const el = document.getElementById('filesList');
+    const names = Object.keys(PixelLab.files);
+    if (names.length === 0){ el.innerHTML = '<p class="empty">Belum ada file. Tambahkan satu untuk memperluas PIXEL LAB.</p>'; return; }
+    el.innerHTML = '';
+    names.forEach(function(name){
+      const baseName = name.replace(/\.js$/,'');
+      const hasGame = !!PixelLab.games[baseName];
+      const row = document.createElement('div');
+      row.className = 'list-item';
+      row.innerHTML =
+        '<div class="list-item-head"><span class="list-item-name">'+escapeHtml(name)+'</span>'+
+        '<span class="list-item-size">'+PixelLab.files[name].length+' char</span></div>'+
+        '<div class="list-item-actions">'+
+          '<button data-run="'+escapeHtml(name)+'">Jalankan</button>'+
+          '<button data-edit="'+escapeHtml(name)+'">Ubah</button>'+
+          '<button data-del="'+escapeHtml(name)+'" class="danger">Hapus</button>'+
+          '<button data-load="'+escapeHtml(baseName)+'" class="accent"'+(hasGame?'':' disabled')+'>Muat sbg Game</button>'+
+        '</div>';
+      el.appendChild(row);
+    });
+    el.querySelectorAll('[data-run]').forEach(function(b){
+      b.addEventListener('click', function(){
+        const name = b.getAttribute('data-run');
+        const res = runCode(PixelLab.files[name]);
+        if (!res.ok) termPrint('Error di '+name+': '+res.error, 'error');
+        else termPrint('File '+name+' dijalankan.', 'success');
+        renderFilesList();
+      });
+    });
+    el.querySelectorAll('[data-edit]').forEach(function(b){
+      b.addEventListener('click', function(){ openFileModal(b.getAttribute('data-edit')); });
+    });
+    el.querySelectorAll('[data-del]').forEach(function(b){
+      b.addEventListener('click', function(){
+        delete PixelLab.files[b.getAttribute('data-del')];
+        renderFilesList();
+      });
+    });
+    el.querySelectorAll('[data-load]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if (b.hasAttribute('disabled')) return;
+        PixelLab.loadGame(b.getAttribute('data-load'));
+      });
+    });
+  }
+
+  function openFileModal(existingName){
+    const isEdit = !!existingName;
+    const code = isEdit ? PixelLab.files[existingName] : document.getElementById('template-game').textContent.trim();
+    const nameVal = isEdit ? existingName : 'gameBaru.js';
+    openModal(
+      '<h3>'+(isEdit?'Ubah File':'Tambah File')+'</h3>'+
+      '<label>Nama file<input id="mFileName" value="'+escapeHtml(nameVal)+'"/></label>'+
+      '<label>Kode<textarea id="mFileCode" rows="14">'+escapeHtml(code)+'</textarea></label>'+
+      '<p class="modal-error hidden" id="mFileError"></p>'+
+      '<div class="modal-actions"><button id="mCancel" class="btn-ghost" type="button">Batal</button><button id="mSave" class="btn-accent" type="button">Simpan</button></div>'
+    );
+    document.getElementById('mCancel').addEventListener('click', closeModal);
+    document.getElementById('mSave').addEventListener('click', function(){
+      const newName = document.getElementById('mFileName').value.trim();
+      const newCode = document.getElementById('mFileCode').value;
+      if (!newName){ showModalError('mFileError', 'Nama file wajib diisi.'); return; }
+      if (isEdit && newName !== existingName) delete PixelLab.files[existingName];
+      PixelLab.files[newName] = newCode;
+      renderFilesList();
+      closeModal();
+    });
+  }
+
+  /* ======================= CONTROLLERS UI ======================= */
+  function renderControllersList(){
+    const el = document.getElementById('controllersList');
+    if (!el) return;
+    const ids = Object.keys(PixelLab.controllers);
+    el.innerHTML = '';
+    ids.forEach(function(id){
+      const c = PixelLab.controllers[id];
+      const row = document.createElement('div');
+      row.className = 'list-item';
+      row.innerHTML =
+        '<div class="list-item-head"><span class="list-item-name">'+escapeHtml(c.name||id)+'</span>'+
+        '<span class="tag">'+(c.builtin?'bawaan':'kustom')+'</span></div>'+
+        '<div class="list-item-actions">'+
+          '<label class="switch"><input type="checkbox" data-toggle="'+id+'" '+(c.active?'checked':'')+'/> aktif</label>'+
+          (c.builtin ? '' : '<button data-remove="'+id+'" class="danger">Hapus</button>')+
+        '</div>';
+      el.appendChild(row);
+    });
+    el.querySelectorAll('[data-toggle]').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        PixelLab.toggleController(inp.getAttribute('data-toggle'), inp.checked);
+      });
+    });
+    el.querySelectorAll('[data-remove]').forEach(function(b){
+      b.addEventListener('click', function(){ PixelLab.removeController(b.getAttribute('data-remove')); });
+    });
+  }
+
+  function openControllerModal(){
+    const code = document.getElementById('template-controller').textContent.trim();
+    openModal(
+      '<h3>Tambah Controller</h3>'+
+      '<label>Nama controller<input id="mCtrlName" value="Controller Baru"/></label>'+
+      '<label>Kode (object literal, butuh attach &amp; detach)<textarea id="mCtrlCode" rows="14">'+escapeHtml(code)+'</textarea></label>'+
+      '<p class="modal-error hidden" id="mCtrlError"></p>'+
+      '<div class="modal-actions"><button id="mCancel" class="btn-ghost" type="button">Batal</button><button id="mSave" class="btn-accent" type="button">Simpan</button></div>'
+    );
+    document.getElementById('mCancel').addEventListener('click', closeModal);
+    document.getElementById('mSave').addEventListener('click', function(){
+      const name = document.getElementById('mCtrlName').value.trim() || 'Controller Baru';
+      const code = document.getElementById('mCtrlCode').value;
+      try {
+        const def = eval('(' + code + ')');
+        if (!def || typeof def.attach !== 'function' || typeof def.detach !== 'function'){
+          throw new Error('Object harus punya method attach(dispatch) dan detach().');
+        }
+        def.name = def.name || name;
+        const id = 'custom_' + Date.now();
+        PixelLab.registerController(id, def, true);
+        closeModal();
+      } catch(err){
+        showModalError('mCtrlError', 'Error: ' + err.message);
+      }
+    });
+  }
+
+  /* ======================= GAME SELECTOR / STATS ======================= */
+  function updateGameSelector(){
+    const sel = document.getElementById('gameSelect');
+    if (!sel) return;
+    const names = Object.keys(PixelLab.games);
+    sel.innerHTML = names.map(function(n){
+      return '<option value="'+n+'"'+(n===PixelLab.activeGameName?' selected':'')+'>'+escapeHtml(PixelLab.games[n].name||n)+'</option>';
+    }).join('');
+  }
+
+  function updateStatsUI(o){
+    if (!o) return;
+    if ('score' in o) document.getElementById('statScore').textContent = o.score;
+    if ('level' in o) document.getElementById('statLevel').textContent = o.level;
+    if ('lines' in o) document.getElementById('statLines').textContent = o.lines;
+  }
+
+  /* ======================= TABS / RESIZER ======================= */
+  function setupTabs(){
+    document.querySelectorAll('.tab').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.add('hidden'); });
+        btn.classList.add('active');
+        document.getElementById('tab-'+btn.dataset.tab).classList.remove('hidden');
+      });
+    });
+  }
+
+  function setupResizer(){
+    const divider = document.getElementById('divider');
+    const devPanel = document.getElementById('devPanel');
+    const split = document.getElementById('split');
+    let dragging = false;
+    divider.addEventListener('pointerdown', function(e){ dragging = true; divider.setPointerCapture(e.pointerId); });
+    divider.addEventListener('pointermove', function(e){
+      if (!dragging) return;
+      const rect = split.getBoundingClientRect();
+      let pct = ((e.clientX - rect.left) / rect.width) * 100;
+      pct = Math.max(22, Math.min(65, pct));
+      devPanel.style.flexBasis = pct + '%';
+    });
+    divider.addEventListener('pointerup', function(){ dragging = false; });
+    divider.addEventListener('pointercancel', function(){ dragging = false; });
+  }
+
+  /* ======================= BOOT ======================= */
+  let lastT = 0;
+  function loop(t){
+    requestAnimationFrame(loop);
+    if (!PixelLab.activeGame) return;
+    const dt = lastT ? (t - lastT) : 16;
+    lastT = t;
+    if (!PixelLab.paused && PixelLab.activeGame.update) PixelLab.activeGame.update(dt);
+    if (PixelLab.activeGame.render) PixelLab.activeGame.render(PixelLab.ctx, PixelLab.canvas);
+    if (PixelLab.paused) drawPauseOverlay();
+  }
+
+  function drawPauseOverlay(){
+    const ctx = PixelLab.ctx, canvas = PixelLab.canvas;
+    ctx.fillStyle = 'rgba(10,6,20,0.55)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#a78bfa';
+    ctx.font = '14px "Press Start 2P", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSED', canvas.width/2, canvas.height/2);
+  }
+
+  function init(){
+    setupTabs();
+    setupTerminal();
+    setupResizer();
+
+    PixelLab.canvas = document.getElementById('gameCanvas');
+    PixelLab.ctx = PixelLab.canvas.getContext('2d');
+    PixelLab.nextCanvas = document.getElementById('nextCanvas');
+    PixelLab.nextCtx = PixelLab.nextCanvas.getContext('2d');
+    PixelLab.api = {
+      canvas: PixelLab.canvas, ctx: PixelLab.ctx,
+      nextCanvas: PixelLab.nextCanvas, nextCtx: PixelLab.nextCtx,
+      log: function(m,t){ PixelLab.log(m,t); },
+      setStats: function(o){ updateStatsUI(o); }
+    };
+
+    PixelLab.registerGame('tetris', TetrisGame);
+    PixelLab.loadGame('tetris');
+
+    PixelLab.registerController('keyboard', KeyboardController, true);
+    PixelLab.registerController('touch', TouchController, true);
+    PixelLab.registerController('gamepad', GamepadController, false);
+
+    PixelLab.files['snake.js'] = document.getElementById('starter-snake').textContent.trim();
+    PixelLab.files['crazy-colors.js'] = document.getElementById('starter-colors').textContent.trim();
+    renderFilesList();
+    renderControllersList();
+    updateGameSelector();
+
+    document.getElementById('gameSelect').addEventListener('change', function(e){ PixelLab.loadGame(e.target.value); });
+    document.getElementById('addFileBtn').addEventListener('click', function(){ openFileModal(); });
+    document.getElementById('addControllerBtn').addEventListener('click', openControllerModal);
+    document.getElementById('modalBackdrop').addEventListener('click', function(e){
+      if (e.target.id === 'modalBackdrop') closeModal();
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+    requestAnimationFrame(loop);
+
+    termPrint('PIXEL LAB siap.', 'success');
+    termPrint('Panel kiri adalah dev tools: Terminal, Files, Controllers.', 'info');
+    termPrint('Ketik "help" untuk daftar perintah, atau tulis kode JavaScript apa pun untuk mengubah game secara langsung (variabel PL dan game tersedia).', 'info');
+    termPrint('Coba buka tab Files, jalankan "snake.js", lalu pilih Snake di dropdown Game untuk mengganti Tetris.', 'info');
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+
+  window.PixelLab = PixelLab;
+})();
+</script>
+</body>
+</html>
