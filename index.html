@@ -301,6 +301,29 @@
   ::-webkit-scrollbar{ width:8px; height:8px; }
   ::-webkit-scrollbar-thumb{ background:var(--raised2); border-radius:4px; }
   ::-webkit-scrollbar-track{ background:transparent; }
+
+  /* ---------- mini audio player ---------- */
+  .mini-audio-player{
+    position:fixed; right:12px; bottom:12px; z-index:999;
+    display:flex; align-items:center; gap:8px;
+    background:rgba(90,91,98,0.45);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    border:1px solid rgba(150,152,163,0.25);
+    border-radius:20px; padding:6px 12px 6px 6px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.35);
+    max-width:180px;
+  }
+  .mini-audio-player .map-btn{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    background:rgba(150,152,163,0.35); border:1px solid rgba(150,152,163,0.3);
+    color:var(--text); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:11px; line-height:1;
+  }
+  .mini-audio-player .map-btn:hover{ background:rgba(167,139,250,0.35); }
+  .mini-audio-player .map-title{
+    font-size:9px; color:var(--text); opacity:0.85; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; letter-spacing:0.2px;
+  }
 </style>
 </head>
 <body>
@@ -1662,6 +1685,28 @@ return 'selesai';
   document.addEventListener('DOMContentLoaded', init);
 
   window.PixelLab = PixelLab;
+})();
+</script>
+<div class="mini-audio-player" id="miniAudioPlayer">
+  <button type="button" class="map-btn" id="miniAudioToggle" aria-label="Play/Pause">▶</button>
+  <span class="map-title">bye-ariana grande</span>
+  <audio id="miniAudioEl" src="https://files.catbox.moe/1h0sh0.mp3" preload="none" loop></audio>
+</div>
+<script>
+(function(){
+  var audio = document.getElementById('miniAudioEl');
+  var btn = document.getElementById('miniAudioToggle');
+  if (!audio || !btn) return;
+  btn.addEventListener('click', function(){
+    if (audio.paused){
+      audio.play().then(function(){ btn.textContent = '⏸'; }).catch(function(){});
+    } else {
+      audio.pause();
+      btn.textContent = '▶';
+    }
+  });
+  audio.addEventListener('pause', function(){ btn.textContent = '▶'; });
+  audio.addEventListener('play', function(){ btn.textContent = '⏸'; });
 })();
 </script>
 </body>
