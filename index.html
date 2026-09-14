@@ -8,11 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#0c0d0f;
-    --panel:rgba(32,33,36,0.55);
-    --panel-solid:#1c1d20;
-    --raised:rgba(58,59,64,0.55);
-    --raised2:rgba(78,79,86,0.6);
+    --void:#000;
+    --panel:rgba(0,0,0,0.62);
+    --panel-solid:rgba(0,0,0,0.82);
+    --raised:rgba(0,0,0,0.58);
+    --raised2:rgba(0,0,0,0.72);
     --border:rgba(150,152,163,0.22);
     --violet:#a78bfa;
     --violet-dim:#7c5fd6;
@@ -58,7 +58,7 @@
     display:flex; align-items:center; justify-content:space-between;
     padding:10px 16px;
     border-bottom:1px solid var(--border);
-    background:rgba(28,29,32,0.45);
+    background:rgba(0,0,0,0.62);
   }
   .brand{ font-family:var(--font-mono); font-size:20px; font-weight:600; letter-spacing:1px; color:#4b4d52; }
   .topbar-status{ font-size:11px; color:var(--muted); }
@@ -73,7 +73,7 @@
   .gamepanel{
     flex:1 1 auto; align-items:center; padding:14px 10px 10px; gap:10px;
     overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
-    min-height:0; background:rgba(48,49,53,0.62);
+    min-height:0; background:rgba(0,0,0,0.48);
   }
 
   .divider{
@@ -112,7 +112,7 @@
   .term-inputrow{
     flex:0 0 auto; display:flex; align-items:center; gap:8px;
     border-top:1px solid var(--border); padding:8px 12px;
-    background:rgba(0,0,0,0.2);
+    background:rgba(0,0,0,0.5);
   }
   .term-inputrow .prompt{ color:var(--emerald); font-weight:600; }
   .term-inputrow input{
@@ -130,7 +130,7 @@
 
   .list-item{
     border:1px solid var(--border); border-radius:6px; padding:8px 10px;
-    margin-bottom:8px; background:rgba(60,61,66,0.35);
+    margin-bottom:8px; background:rgba(0,0,0,0.46);
   }
   .list-item-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .list-item-name{ font-size:12px; color:var(--text); word-break:break-all; }
@@ -156,7 +156,7 @@
     font-size:12px; font-weight:600; cursor:pointer;
   }
   .btn-ghost{
-    background:rgba(60,61,66,0.35); border:1px solid var(--border); color:var(--muted);
+    background:rgba(0,0,0,0.46); border:1px solid var(--border); color:var(--muted);
     border-radius:4px; padding:7px 14px; font-size:12px; cursor:pointer;
   }
 
@@ -178,7 +178,7 @@
   .canvas-wrap{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
   #gameCanvas{
     border:2px solid #55565e; border-radius:4px; background:#16171a;
-    box-shadow:0 0 24px rgba(120,121,130,0.25);
+    box-shadow:0 0 18px rgba(0,0,0,0.55);
     image-rendering:pixelated;
   }
 
@@ -220,12 +220,12 @@
 
   /* ---------- modal ---------- */
   .modal-backdrop{
-    position:fixed; inset:0; background:rgba(6,6,8,0.6); display:flex;
+    position:fixed; inset:0; background:rgba(0,0,0,0.74); display:flex;
     align-items:center; justify-content:center; z-index:50; padding:16px;
     overflow-y:auto; -webkit-overflow-scrolling:touch;
   }
   .modal{
-    background:rgba(28,29,32,0.82);
+    background:rgba(0,0,0,0.82);
     border:1px solid var(--border); border-radius:8px;
     width:100%; max-width:480px; max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
     padding:18px;
@@ -242,11 +242,60 @@
   .modal-error{ font-size:11px; color:var(--magenta); margin:-4px 0 12px; }
   .modal-actions{ display:flex; justify-content:flex-end; gap:8px; }
 
+  /* ---------- custom game picker ---------- */
+  .game-select-trigger{
+    min-width:132px; max-width:190px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:rgba(0,0,0,.58); color:var(--text); border:1px solid rgba(255,255,255,.13);
+    border-radius:7px; padding:8px 10px; font-size:11px; cursor:pointer; text-align:left;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.025), 0 7px 18px rgba(0,0,0,.2);
+  }
+  .game-select-trigger:hover{border-color:rgba(167,139,250,.42); background:rgba(8,8,8,.72)}
+  .game-select-trigger:active{transform:translateY(1px)}
+  .game-select-label{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .game-select-chevron{color:#777; font-size:14px; line-height:1; transform:translateY(-1px)}
+  .game-picker-backdrop{
+    position:fixed; inset:0; z-index:70; display:flex; align-items:center; justify-content:center;
+    padding:18px; background:rgba(0,0,0,.66); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);
+  }
+  .game-picker{
+    width:min(520px,92vw); max-height:min(72vh,560px); overflow:hidden; display:flex; flex-direction:column;
+    background:rgba(5,7,6,.91); border:1px solid rgba(255,255,255,.11); border-radius:18px;
+    box-shadow:0 24px 70px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.035);
+  }
+  .game-picker-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:20px 20px 15px; border-bottom:1px solid rgba(255,255,255,.07)}
+  .game-picker-title{font-family:var(--font-display); font-size:13px; letter-spacing:1.5px; color:#f0f0f0}
+  .game-picker-subtitle{margin-top:6px; font-size:9px; letter-spacing:1.15px; text-transform:lowercase; color:#737a75}
+  .game-picker-close{width:30px; height:30px; border:1px solid rgba(255,255,255,.1); border-radius:50%; background:rgba(255,255,255,.025); color:#8b918d; font-size:19px; line-height:1; cursor:pointer}
+  .game-picker-close:hover{color:#fff; border-color:rgba(255,255,255,.2); background:rgba(255,255,255,.06)}
+  .game-picker-list{overflow-y:auto; padding:8px 10px; scrollbar-width:thin; scrollbar-color:#343834 transparent}
+  .game-picker-item{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding:15px 12px; border:1px solid transparent; border-radius:10px; background:transparent;
+    color:#d9ddd9; text-align:left; cursor:pointer; transition:background .16s,border-color .16s,transform .12s;
+  }
+  .game-picker-item:hover{background:rgba(255,255,255,.045); border-color:rgba(255,255,255,.07)}
+  .game-picker-item:active{transform:scale(.995)}
+  .game-picker-item.active{background:rgba(167,139,250,.065); border-color:rgba(167,139,250,.22); color:#fff}
+  .game-picker-item-name{font-size:12px; letter-spacing:.2px}
+  .game-picker-item-meta{font-size:8px; color:#646a66; margin-top:4px}
+  .game-picker-radio{width:18px; height:18px; flex:0 0 18px; border:2px solid #8d958f; border-radius:50%; position:relative; box-sizing:border-box}
+  .game-picker-item.active .game-picker-radio{border-color:#55f6a0}
+  .game-picker-item.active .game-picker-radio::after{content:""; position:absolute; inset:3px; border-radius:50%; background:#55f6a0; box-shadow:0 0 8px rgba(85,246,160,.35)}
+  .game-picker-foot{padding:13px 20px 15px; border-top:1px solid rgba(255,255,255,.07); color:#666c68; font-size:9px; letter-spacing:.75px; text-align:center}
+  @media(max-width:760px){
+    .game-select-trigger{min-width:118px; max-width:150px; padding:7px 9px}
+    .game-picker-backdrop{padding:10px}
+    .game-picker{width:min(470px,96vw); max-height:76vh; border-radius:15px}
+    .game-picker-head{padding:17px 16px 13px}
+    .game-picker-item{padding:13px 10px}
+    .game-picker-foot{padding:11px 14px 13px}
+  }
+
   /* ---------- landscape-only enforcement ---------- */
   .rotate-gate{
     position:fixed; inset:0; z-index:999; display:none;
     flex-direction:column; align-items:center; justify-content:center; gap:16px;
-    background:rgba(8,8,10,0.96); color:var(--text); text-align:center; padding:24px;
+    background:rgba(0,0,0,0.94); color:var(--text); text-align:center; padding:24px;
   }
   .rotate-gate .icon{ font-size:48px; animation:tilt 1.6s ease-in-out infinite; }
   .rotate-gate h2{ font-family:var(--font-display); font-size:13px; color:var(--violet); margin:0; line-height:1.6; }
@@ -272,7 +321,7 @@
   }
   .zoom-controls button{
     width:28px; height:28px; border-radius:50%; border:1px solid var(--border);
-    background:rgba(60,61,66,0.5); color:var(--text); font-size:16px; font-weight:600;
+    background:rgba(0,0,0,0.58); color:var(--text); font-size:16px; font-weight:600;
     cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1;
   }
   .zoom-controls button:active{ background:var(--raised2); }
@@ -302,33 +351,79 @@
   ::-webkit-scrollbar-thumb{ background:var(--raised2); border-radius:4px; }
   ::-webkit-scrollbar-track{ background:transparent; }
 
-  /* ---------- mini audio player ---------- */
-  .mini-audio-player{
-    position:fixed; right:12px; bottom:12px; z-index:999;
-    display:flex; align-items:center; gap:8px;
-    background:rgba(90,91,98,0.45);
-    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
-    border:1px solid rgba(150,152,163,0.25);
-    border-radius:20px; padding:6px 12px 6px 6px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.35);
-    max-width:180px;
-  }
-  .mini-audio-player .map-btn{
-    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
-    background:rgba(150,152,163,0.35); border:1px solid rgba(150,152,163,0.3);
-    color:var(--text); display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:11px; line-height:1;
-  }
-  .mini-audio-player .map-btn:hover{ background:rgba(167,139,250,0.35); }
-  .mini-audio-player .map-title{
-    font-size:9px; color:var(--text); opacity:0.85; white-space:nowrap;
-    overflow:hidden; text-overflow:ellipsis; letter-spacing:0.2px;
-  }
+/* ================= PIXEL LAB ================= */
+.topbar-tools{display:flex;align-items:center;gap:6px}
+.topbar-tools button{min-width:30px;height:30px;padding:0 8px;border:1px solid var(--border);background:var(--raised);color:var(--text);border-radius:5px;cursor:pointer}
+.topbar-tools button:disabled{opacity:.35;cursor:not-allowed}
+.metric{font-size:9px;color:var(--muted);padding:0 4px}
+.toolbar-sep{width:1px;height:22px;background:var(--border);margin:0 2px}
+.editor-shell{position:relative;display:grid;grid-template-columns:auto 1fr;border:1px solid var(--border);border-radius:5px;overflow:hidden;background:#111216;min-height:300px}
+.editor-lines{padding:10px 8px;text-align:right;color:#555863;background:#18191d;user-select:none;white-space:pre;font:12px/1.5 var(--font-mono)}
+.code-editor{border:0!important;border-radius:0!important;margin:0!important;min-height:300px!important;resize:none!important;outline:none!important;tab-size:2;font:12px/1.5 var(--font-mono)!important;background:#111216!important;color:#e9e9ee!important}
+.editor-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.editor-status{font-size:10px;color:var(--muted)}
+.kbd{border:1px solid var(--border);background:var(--raised);padding:1px 5px;border-radius:3px;font-size:9px}
+.fps-badge{font-size:9px;color:var(--teal);min-width:50px;text-align:right}
+.dev-tools{display:flex;align-items:center;gap:5px}
+.dev-tools button{font-size:10px;padding:5px 7px}
+.theme-light{
+  --void:#e9eaee;--panel:rgba(255,255,255,.75);--panel-solid:#fff;
+  --raised:rgba(210,212,218,.8);--raised2:rgba(190,193,201,.9);
+  --border:rgba(50,52,60,.2);--text:#202126;--muted:#62646d;
+}
+.game-tools{display:flex;gap:5px;justify-content:flex-end}
+.game-tools button{font-size:10px;padding:5px 7px}
+.modal.modal-wide{max-width:820px}
+.editor-hint{font-size:10px;color:var(--muted);line-height:1.45;margin:6px 0 10px}
+.game-card{display:flex;gap:8px;align-items:center}
+.game-card small{color:var(--muted);font-size:9px}
+@media(max-width:760px){
+  .topbar{padding:7px 9px}
+  .brand{font-size:15px}
+  .topbar-status{font-size:9px}
+  .stats{gap:8px}
+  .devpanel{flex-basis:44%!important}
+}
+
+
+/* PIXEL LAB minimal dark loading/music */
+.pixel-loading{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:#000;opacity:0;pointer-events:none;transition:opacity .5s ease}
+.pixel-loading.show{opacity:1;pointer-events:auto}
+.loading-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;background:transparent;border:0;box-shadow:none;width:auto;padding:20px}
+.loading-brand{font-family:var(--font-display);font-size:17px;letter-spacing:3px;color:#f4f4f5;animation:loadingPulse 1.8s ease-in-out infinite}
+.loading-word{display:none}
+.loading-bar{width:74px;height:2px;margin:0;background:rgba(255,255,255,.12);overflow:hidden;border-radius:2px}
+.loading-bar span{display:block;width:30%;height:100%;background:#fff;border-radius:2px;animation:loadingSweep 1.1s ease-in-out infinite}
+.loading-sub{font-size:8px;color:#666;min-height:10px;letter-spacing:2px;text-transform:uppercase}
+.loading-credit{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;color:#777;animation:creditFade 2.2s ease-in-out infinite}
+@keyframes creditFade{0%,100%{opacity:.45}50%{opacity:.9}}
+.brightness-overlay{position:fixed;inset:0;z-index:79;background:#fff;opacity:0;pointer-events:none;transition:opacity .12s ease}
+.settings-panel{padding:14px 12px;overflow-y:auto}
+.settings-title{font-family:var(--font-display);font-size:12px;color:var(--text);margin-bottom:16px}
+.settings-group{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.settings-group-title{font-size:11px;color:var(--muted);margin-bottom:12px}
+.setting-row{display:grid;grid-template-columns:1fr auto;gap:7px 10px;align-items:center;margin-bottom:16px;color:var(--text);font-size:11px}
+.setting-row output{font-size:10px;color:var(--muted);font-family:var(--font-mono)}
+.setting-row input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--violet);height:3px}
+@keyframes loadingPulse{0%,100%{opacity:.62;transform:translateY(0)}50%{opacity:1;transform:translateY(-1px)}}
+@keyframes loadingSweep{0%{transform:translateX(-250%);opacity:.2}45%{opacity:1}100%{transform:translateX(550%);opacity:.2}}
+.music-player{position:fixed;right:8px;bottom:8px;z-index:80;display:flex;align-items:center;gap:5px;width:136px;padding:4px 5px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.12);border-radius:6px;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.music-player button{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.65);color:#fff;cursor:pointer;font-size:9px;flex:0 0 auto}
+.music-meta{min-width:0;flex:1;display:flex;flex-direction:column;gap:1px}
+.music-meta span{font-size:6.5px;letter-spacing:.45px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-meta small{font-size:6.5px;color:#666}
+.music-player input[type=range]{width:34px;height:2px;accent-color:#fff;flex:0 0 auto}
+@media(max-width:760px){
+  .music-player{width:122px;right:6px;bottom:6px;padding:3px 4px;gap:4px}
+  .music-player button{width:20px;height:20px;font-size:8px}
+  .music-player input[type=range]{width:28px}
+}
+
 </style>
 </head>
 <body>
 
-<video class="bg-video" autoplay muted loop playsinline preload="auto" src="https://files.catbox.moe/60f4px.mp4"></video>
+<video class="bg-video" autoplay muted loop playsinline preload="auto" src="https://files.catbox.moe/zai84w.mp4"></video>
 <div class="bg-overlay"></div>
 
 <div class="rotate-gate" id="rotateGate">
@@ -345,12 +440,36 @@
   <button id="zoomInBtn" type="button" title="Perbesar tampilan">+</button>
 </div>
 
+
+<div class="pixel-loading" id="pixelLoading" aria-busy="true">
+  <div class="loading-card" aria-label="Loading PIXEL LAB">
+    <div class="loading-brand">PIXEL LAB</div>
+    <div class="loading-bar" aria-hidden="true"><span id="loadingBarFill"></span></div>
+    <div class="loading-credit">ZEPARDON DECODE</div>
+  </div>
+</div>
+<div class="brightness-overlay" id="brightnessOverlay" aria-hidden="true"></div>
+<div class="music-player" id="musicPlayer">
+  <button id="musicPlayBtn" type="button">▶</button>
+  <div class="music-meta"><span>PIXEL LAB MUSIC</span><small id="musicState">siap</small></div>
+  <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="0.45">
+  <audio id="bgMusic" preload="auto" loop src="https://files.catbox.moe/tanql1.mp3"></audio>
+</div>
+
 <div class="app">
 
   <header class="topbar">
     <div class="brand">𝔓𝔦𝔵𝔢𝔩𝔏𝔞𝔟</div>
-    <div class="topbar-status">
-      <span id="statusLine">memuat…</span><span class="autosave-badge" id="autosaveBadge">💾 tersimpan</span>
+    <div class="topbar-tools">
+      <div class="dev-tools">
+        <button id="undoBtn" title="Undo">↶</button>
+        <button id="redoBtn" title="Redo">↷</button>
+        <button id="resetLayoutBtn" title="Reset layout">⌗</button>
+      </div>
+      <span class="toolbar-sep"></span>
+      <div class="topbar-status">
+        <span id="statusLine">memuat…</span><span class="autosave-badge" id="autosaveBadge">💾 tersimpan</span>
+      </div>
     </div>
   </header>
 
@@ -362,6 +481,7 @@
         <button class="tab" data-tab="files" type="button">Files</button>
         <button class="tab" data-tab="commands" type="button">Commands</button>
         <button class="tab" data-tab="controllers" type="button">Controllers</button>
+        <button class="tab" data-tab="websettings" type="button">Web Setting</button>
       </nav>
 
       <div class="tabpanel" id="tab-terminal">
@@ -377,6 +497,8 @@
           <button id="addFileBtn" class="btn-accent" type="button">+ File</button>
           <button id="exportFilesBtn" class="btn-ghost" type="button">Ekspor</button>
           <button id="importFilesBtn" class="btn-ghost" type="button">Impor</button>
+          <button id="exportProjectBtn" class="btn-ghost" type="button">Proyek</button>
+          <button id="resetLayoutBtn2" class="btn-ghost" type="button">Reset UI</button>
           <input type="file" id="importFilesInput" accept="application/json" class="hidden" />
         </div>
         <div class="list" id="filesList"></div>
@@ -391,6 +513,18 @@
         <div class="tab-toolbar"><button id="addControllerBtn" class="btn-accent" type="button">+ Controller</button></div>
         <div class="list" id="controllersList"></div>
       </div>
+
+      <div class="tabpanel hidden" id="tab-websettings">
+        <div class="settings-panel">
+          <div class="settings-title">Web Setting</div>
+          <label class="setting-row"><span>Brightness</span><output id="brightnessValue">100%</output><input id="brightnessRange" type="range" min="60" max="140" step="1" value="100"></label>
+          <div class="settings-group">
+            <div class="settings-group-title">Volume:</div>
+            <label class="setting-row"><span>Music</span><output id="settingsMusicValue">45%</output><input id="settingsMusicRange" type="range" min="0" max="1" step="0.01" value="0.45"></label>
+            <label class="setting-row"><span>Game</span><output id="settingsGameValue">100%</output><input id="settingsGameRange" type="range" min="0" max="1" step="0.01" value="1"></label>
+          </div>
+        </div>
+      </div>
     </section>
 
     <div class="divider" id="divider" aria-hidden="true"></div>
@@ -398,8 +532,15 @@
     <section class="panel gamepanel" id="gamePanel">
       <div class="game-header">
         <div class="row1">
-          <select id="gameSelect"></select>
+          <button id="gameSelectButton" class="game-select-trigger" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <span class="game-select-label" id="gameSelectLabel">Tetris</span>
+            <span class="game-select-chevron">⌄</span>
+          </button>
+          <select id="gameSelect" class="hidden" aria-hidden="true" tabindex="-1"></select>
           <canvas id="nextCanvas" width="60" height="60"></canvas>
+        </div>
+        <div class="game-tools">
+          <button id="restartGameBtn" type="button">↻ Restart</button>
         </div>
         <div class="stats">
           <div><span>SCORE</span><b id="statScore">0</b></div>
@@ -432,6 +573,20 @@
 
 <div class="modal-backdrop hidden" id="modalBackdrop">
   <div class="modal" id="modalBox"></div>
+</div>
+
+<div class="game-picker-backdrop hidden" id="gamePickerBackdrop" aria-hidden="true">
+  <div class="game-picker" role="dialog" aria-modal="true" aria-labelledby="gamePickerTitle">
+    <div class="game-picker-head">
+      <div>
+        <div class="game-picker-title" id="gamePickerTitle">SELECT GAME</div>
+        <div class="game-picker-subtitle">default game in pixellab</div>
+      </div>
+      <button class="game-picker-close" id="gamePickerClose" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="game-picker-list" id="gamePickerList"></div>
+    <div class="game-picker-foot">Train your imagination with add file</div>
+  </div>
 </div>
 
 <!-- file starter: game kedua, contoh mengganti Tetris sepenuhnya -->
@@ -655,6 +810,7 @@ return 'selesai';
       this.activeGame = def;
       if (def.init) def.init(this.api);
       if (typeof updateGameSelector === 'function') updateGameSelector();
+      const nc=document.getElementById('nextCanvas'); if(nc) nc.style.visibility=(name==='tetris'?'visible':'hidden');
       setStatus((def.name||name) + ' • berjalan');
       saveMemory();
     },
@@ -898,6 +1054,134 @@ return 'selesai';
     }
   };
 
+
+  /* ======================= V2 ENGINE / GAME LIBRARY ======================= */
+  const V2 = {
+    history: [], future: [], maxHistory: 40,
+    sound: true, gameVolume:1, audio:null, theme:'dark', showDebug:false, fps:0,
+    snapshot(){
+      return JSON.stringify({
+        files:PixelLab.files, commands:PixelLab.commands,
+        activeGameName:PixelLab.activeGameName, zoomScale:uiScale,
+        devPanelBasis:(document.getElementById('devPanel')||{}).style?.flexBasis||''
+      });
+    },
+    commit(label){
+      const s=this.snapshot();
+      if (this.history[this.history.length-1] !== s){
+        this.history.push(s); if(this.history.length>this.maxHistory)this.history.shift();
+        this.future=[];
+      }
+      updateHistoryButtons();
+    },
+    restore(s){
+      try{
+        const d=JSON.parse(s);
+        PixelLab.files={...(d.files||{})};
+        PixelLab.commands={...(d.commands||{})};
+        if(d.devPanelBasis) document.getElementById('devPanel').style.flexBasis=d.devPanelBasis;
+        if(d.zoomScale) applyZoom(d.zoomScale,false);
+        renderFilesList(); renderCommandsList(); updateGameSelector();
+        if(d.activeGameName && PixelLab.games[d.activeGameName]) PixelLab.loadGame(d.activeGameName);
+        saveMemory(true);
+      }catch(e){ termPrint('Gagal memulihkan riwayat: '+e.message,'error'); }
+    },
+    undo(){ if(!this.history.length)return; const current=this.snapshot(); this.future.push(current); this.restore(this.history.pop()); updateHistoryButtons(); },
+    redo(){ if(!this.future.length)return; const current=this.snapshot(); this.history.push(current); this.restore(this.future.pop()); updateHistoryButtons(); },
+    beep(freq=440,duration=.06){
+      if(!this.sound)return;
+      try{
+        this.audio=this.audio||new (window.AudioContext||window.webkitAudioContext)();
+        const o=this.audio.createOscillator(),g=this.audio.createGain();
+        o.frequency.value=freq;o.type='square';g.gain.setValueAtTime(.035*this.gameVolume,this.audio.currentTime);
+        g.gain.exponentialRampToValueAtTime(.001,this.audio.currentTime+duration);
+        o.connect(g);g.connect(this.audio.destination);o.start();o.stop(this.audio.currentTime+duration);
+      }catch(e){}
+    }
+  };
+
+  function pushHistory(label){ V2.commit(label||'change'); }
+  function updateHistoryButtons(){
+    const u=document.getElementById('undoBtn'),r=document.getElementById('redoBtn');
+    if(u)u.disabled=!V2.history.length;if(r)r.disabled=!V2.future.length;
+  }
+  function resetLayout(){
+    const d=document.getElementById('devPanel'); if(d)d.style.flexBasis='40%';
+    applyZoom(1,false); localStorage.removeItem('pixellab_layout_v2');
+    saveMemory(); termPrint('Layout direset ke default.','success');
+  }
+  function toggleSound(){
+    V2.sound=!V2.sound;
+    const b=
+    V2.beep(V2.sound?660:220,.05);
+  }
+
+  /* Pong */
+  const PongGame={
+    name:'Pong',width:320,height:240,
+    init(api){this.api=api;this.p={x:12,y:90,w:8,h:60};this.ai={x:300,y:90,w:8,h:60};
+      this.ball={x:160,y:120,vx:150,vy:90,r:5};this.score=0;this.aiScore=0;this.api.setStats({score:0,level:'PONG',lines:0});
+      this.api.log('Pong siap. Atas/bawah menggerakkan paddle kiri.','info');},
+    onAction(a){if(a==='up')this.p.y-=18;if(a==='down')this.p.y+=18;if(a==='a')this.ball.vx*=1.08;this.p.y=Math.max(0,Math.min(this.height-this.p.h,this.p.y));},
+    update(dt){const s=dt/1000,b=this.ball;b.x+=b.vx*s;b.y+=b.vy*s;
+      if(b.y<5||b.y>this.height-5){b.vy*=-1;V2.beep(300);}
+      this.ai.y+=(b.y-(this.ai.y+this.ai.h/2))*.06;
+      if(b.x<25&&b.x>12&&b.y>this.p.y&&b.y<this.p.y+this.p.h&&b.vx<0){b.vx=Math.abs(b.vx)*1.03;V2.beep(500);}
+      if(b.x>292&&b.x<305&&b.y>this.ai.y&&b.y<this.ai.y+this.ai.h&&b.vx>0){b.vx=-Math.abs(b.vx)*1.03;V2.beep(500);}
+      if(b.x<0){this.aiScore++;this.resetBall(-1);} if(b.x>this.width){this.score++;this.api.setStats({score:this.score,level:'PONG',lines:this.aiScore});this.resetBall(1);}},
+    resetBall(dir){this.ball={x:160,y:120,vx:150*dir,vy:(Math.random()*140-70),r:5};},
+    render(ctx,c){ctx.fillStyle='#15161a';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#34d399';ctx.fillRect(this.p.x,this.p.y,this.p.w,this.p.h);
+      ctx.fillStyle='#f472b6';ctx.fillRect(this.ai.x,this.ai.y,this.ai.w,this.ai.h);ctx.fillStyle='#a78bfa';ctx.fillRect(this.ball.x-5,this.ball.y-5,10,10);
+      ctx.fillStyle='#9a9ba5';ctx.font='18px "IBM Plex Mono"';ctx.textAlign='center';ctx.fillText(this.score+' : '+this.aiScore,160,25);}
+  };
+
+  /* Breakout */
+  const BreakoutGame={
+    name:'Breakout',width:320,height:320,
+    init(api){this.api=api;this.score=0;this.p={x:130,w:60};this.b={x:160,y:260,vx:110,vy:-130,r:5};this.bricks=[];
+      for(let r=0;r<5;r++)for(let c=0;c<8;c++)this.bricks.push({x:8+c*38,y:25+r*18,w:34,h:12,on:true});
+      api.setStats({score:0,level:1,lines:40});api.log('Breakout siap. Kiri/kanan menggerakkan paddle.','info');},
+    onAction(a){if(a==='left')this.p.x-=22;if(a==='right')this.p.x+=22;if(a==='a')this.b.vy*=1.05;this.p.x=Math.max(0,Math.min(this.width-this.p.w,this.p.x));},
+    update(dt){const s=dt/1000,b=this.b;b.x+=b.vx*s;b.y+=b.vy*s;if(b.x<5||b.x>315)b.vx*=-1;if(b.y<5)b.vy*=-1;
+      if(b.y>250&&b.y<280&&b.x>this.p.x&&b.x<this.p.x+this.p.w&&b.vy>0){b.vy=-Math.abs(b.vy);b.vx+=(b.x-(this.p.x+this.p.w/2))*2;V2.beep(500);}
+      for(const q of this.bricks)if(q.on&&b.x>q.x&&b.x<q.x+q.w&&b.y>q.y&&b.y<q.y+q.h){q.on=false;b.vy*=-1;this.score+=10;V2.beep(700);this.api.setStats({score:this.score,level:1,lines:this.bricks.filter(x=>!x.on).length});}
+      if(b.y>this.height+10)this.init(this.api);},
+    render(ctx,c){ctx.fillStyle='#15161a';ctx.fillRect(0,0,c.width,c.height);for(const q of this.bricks)if(q.on){ctx.fillStyle='#a78bfa';ctx.fillRect(q.x,q.y,q.w,q.h);}
+      ctx.fillStyle='#34d399';ctx.fillRect(this.p.x,275,this.p.w,8);ctx.fillStyle='#f472b6';ctx.fillRect(this.b.x-5,this.b.y-5,10,10);}
+  };
+
+  /* Flappy */
+  const FlappyGame={
+    name:'Flappy',width:288,height:360,
+    init(api){this.api=api;this.bird={x:65,y:180,vy:0};this.pipes=[];this.t=0;this.score=0;this.over=false;api.setStats({score:0,level:'FLAP',lines:0});api.log('Flappy siap. A / ▲ untuk terbang.','info');},
+    onAction(a){if(a==='up'||a==='a'){if(this.over)this.init(this.api);else{this.bird.vy=-220;V2.beep(520);}}},
+    update(dt){if(this.over)return;const s=dt/1000;this.bird.vy+=620*s;this.bird.y+=this.bird.vy*s;this.t+=dt;
+      if(this.t>1450){this.t=0;const gap=105,top=35+Math.random()*130;this.pipes.push({x:this.width,top,bot:top+gap,passed:false});}
+      for(const p of this.pipes){p.x-=110*s;if(!p.passed&&p.x<55){p.passed=true;this.score++;this.api.setStats({score:this.score,level:'FLAP',lines:0});}
+        if(55>p.x-16&&55<p.x+42&&(this.bird.y-10<p.top||this.bird.y+10>p.bot))this.over=true;}
+      this.pipes=this.pipes.filter(p=>p.x>-50);if(this.bird.y<0||this.bird.y>this.height)this.over=true;if(this.over)this.api.log('Flappy game over. Tekan A untuk ulang.','error');},
+    render(ctx,c){ctx.fillStyle='#202126';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#34d399';for(const p of this.pipes){ctx.fillRect(p.x,0,42,p.top);ctx.fillRect(p.x,p.bot,42,c.height-p.bot);}
+      ctx.fillStyle='#facc15';ctx.fillRect(45,this.bird.y-8,20,16);if(this.over){ctx.fillStyle='rgba(0,0,0,.65)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#f472b6';ctx.font='14px "Press Start 2P"';ctx.textAlign='center';ctx.fillText('GAME OVER',c.width/2,c.height/2);}}
+  };
+
+  /* Space Shooter */
+  const ShooterGame={
+    name:'Space Shooter',width:320,height:360,
+    init(api){this.api=api;this.ship={x:150,y:320};this.bullets=[];this.enemies=[];this.t=0;this.score=0;api.setStats({score:0,level:1,lines:0});api.log('Space Shooter siap. Gerak kiri/kanan, A menembak.','info');},
+    onAction(a){if(a==='left')this.ship.x-=20;if(a==='right')this.ship.x+=20;if(a==='a'){this.bullets.push({x:this.ship.x+10,y:this.ship.y-8});V2.beep(800);}},
+    update(dt){const s=dt/1000;this.ship.x=Math.max(0,Math.min(300,this.ship.x));this.t+=dt;if(this.t>650){this.t=0;this.enemies.push({x:10+Math.random()*280,y:-20,v:60+Math.random()*70});}
+      for(const b of this.bullets)b.y-=320*s;for(const e of this.enemies)e.y+=e.v*s;
+      for(const b of this.bullets)for(const e of this.enemies)if(Math.abs(b.x-e.x)<15&&Math.abs(b.y-e.y)<15){b.dead=true;e.dead=true;this.score+=10;this.api.setStats({score:this.score,level:1,lines:0});V2.beep(650);}
+      this.bullets=this.bullets.filter(b=>b.y>-20&&!b.dead);this.enemies=this.enemies.filter(e=>e.y<380&&!e.dead);},
+    render(ctx,c){ctx.fillStyle='#111216';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#5eead4';for(const b of this.bullets)ctx.fillRect(b.x,b.y,3,10);ctx.fillStyle='#f472b6';for(const e of this.enemies)ctx.fillRect(e.x,e.y,18,18);ctx.fillStyle='#a78bfa';ctx.beginPath();ctx.moveTo(this.ship.x+10,this.ship.y);ctx.lineTo(this.ship.x,this.ship.y+22);ctx.lineTo(this.ship.x+20,this.ship.y+22);ctx.closePath();ctx.fill();}
+  };
+
+  PixelLab.registerGame('pong',PongGame);
+  PixelLab.registerGame('breakout',BreakoutGame);
+  PixelLab.registerGame('flappy',FlappyGame);
+  PixelLab.registerGame('shooter',ShooterGame);
+  PixelLab.registerGame('space-shooter',ShooterGame);
+
   /* ======================= CONTROLLERS ======================= */
   const KeyboardController = {
     name:'Keyboard (PC)', builtin:true,
@@ -926,18 +1210,42 @@ return 'selesai';
     name:'Touch Buttons (Mobile)', builtin:true,
     attach(dispatch){
       this._buttons = document.querySelectorAll('[data-action]');
+      this._timers = new Map();
       this._handler = (e)=>{
         e.preventDefault();
-        dispatch(e.currentTarget.getAttribute('data-action'));
+        const b=e.currentTarget, action=b.getAttribute('data-action');
+        dispatch(action); V2.beep(420,.025);
+        if(['left','right','up','down'].includes(action)){
+          clearInterval(this._timers.get(b));
+          const timer=setTimeout(()=>{
+            const iv=setInterval(()=>dispatch(action),75);
+            this._timers.set(b,iv);
+          },220);
+          this._timers.set(b,timer);
+        }
       };
-      this._buttons.forEach(b=>b.addEventListener('pointerdown', this._handler));
-      const pad = document.getElementById('touchpad');
-      if (pad) pad.classList.remove('inactive');
+      this._up = (e)=>{
+        const b=e.currentTarget, t=this._timers.get(b);
+        if(t){clearTimeout(t);clearInterval(t);this._timers.delete(b);}
+      };
+      this._buttons.forEach(b=>{
+        b.addEventListener('pointerdown',this._handler);
+        b.addEventListener('pointerup',this._up);
+        b.addEventListener('pointercancel',this._up);
+        b.addEventListener('pointerleave',this._up);
+      });
+      const pad=document.getElementById('touchpad'); if(pad)pad.classList.remove('inactive');
     },
     detach(){
-      this._buttons.forEach(b=>b.removeEventListener('pointerdown', this._handler));
-      const pad = document.getElementById('touchpad');
-      if (pad) pad.classList.add('inactive');
+      if(!this._buttons)return;
+      this._buttons.forEach(b=>{
+        b.removeEventListener('pointerdown',this._handler);
+        b.removeEventListener('pointerup',this._up);
+        b.removeEventListener('pointercancel',this._up);
+        b.removeEventListener('pointerleave',this._up);
+      });
+      if(this._timers)this._timers.forEach(t=>{clearTimeout(t);clearInterval(t);});
+      const pad=document.getElementById('touchpad');if(pad)pad.classList.add('inactive');
     }
   };
 
@@ -1004,6 +1312,8 @@ return 'selesai';
         '  save              - simpan manual ke memory',
         '  forget            - hapus semua data tersimpan (files/commands/controllers)',
         '  clear             - bersihkan terminal',
+        '  V2: undo/redo, editor kode, project export/import, FPS, sound, tema, reset UI',
+        '  Game baru: Pong, Breakout, Flappy, Space Shooter',
         '',
         'Selain perintah di atas, ketik kode JavaScript apa pun.',
         'Variabel tersedia: PL (engine), game (game aktif).',
@@ -1079,6 +1389,18 @@ return 'selesai';
       } catch(e){ termPrint('Memory tidak tersedia di perangkat ini.', 'error'); }
     },
     save(){ saveMemory(true); termPrint('Tersimpan ke memory.', 'success'); },
+    info(){
+      termPrint([
+        'PIXEL LAB INFO',
+        '  FPS        : ' + (V2.fps || 0),
+        '  game       : ' + (PixelLab.activeGameName || '-'),
+        '  paused     : ' + (PixelLab.paused ? 'yes' : 'no'),
+        '  canvas     : ' + (PixelLab.canvas ? PixelLab.canvas.width+'x'+PixelLab.canvas.height : '-'),
+        '  files      : ' + Object.keys(PixelLab.files).length,
+        '  commands   : ' + Object.keys(PixelLab.commands).length,
+        '  controllers: ' + Object.keys(PixelLab.controllers).length
+      ].join('\n'),'info');
+    },
     forget(){
       try { localStorage.removeItem(MEMORY_KEY); } catch(e){}
       termPrint('Memory dihapus. Muat ulang halaman untuk kembali ke kondisi awal.', 'success');
@@ -1140,7 +1462,7 @@ return 'selesai';
   }
 
   /* ======================= MEMORY (LOCAL PERSISTENCE) ======================= */
-  const MEMORY_KEY = 'pixellab_memory_v1';
+  const MEMORY_KEY = 'pixellab_memory_v2';
   let saveTimer = null;
 
   function saveMemory(immediate){
@@ -1159,7 +1481,7 @@ return 'selesai';
           if (c.builtin) builtinControllerState[id] = !!c.active;
         });
         const data = {
-          version: 1,
+          version: 2,
           files: PixelLab.files,
           commands: PixelLab.commands,
           customControllers: customControllers,
@@ -1194,28 +1516,36 @@ return 'selesai';
   }
 
   function exportFiles(){
-    const data = { files: PixelLab.files, commands: PixelLab.commands, exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'pixellab-export.json';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    termPrint('File & command diekspor ke pixellab-export.json.', 'success');
+    const data = {
+      pixellab:'v2',
+      version:2,
+      files:PixelLab.files,
+      commands:PixelLab.commands,
+      activeGameName:PixelLab.activeGameName,
+      builtinControllerState:Object.fromEntries(Object.keys(PixelLab.controllers).map(id=>[id,!!PixelLab.controllers[id].active])),
+      zoomScale:uiScale,
+      devPanelBasis:(document.getElementById('devPanel')||{}).style?.flexBasis||'',
+      exportedAt:new Date().toISOString()
+    };
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='pixellab-v2-project.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    termPrint('Proyek PIXEL LAB v2 diekspor lengkap.','success');
   }
 
   function importFiles(file){
-    const reader = new FileReader();
-    reader.onload = function(){
-      try {
-        const data = JSON.parse(reader.result);
-        if (data.files) Object.assign(PixelLab.files, data.files);
-        if (data.commands) Object.keys(data.commands).forEach(function(n){ PixelLab.registerCommand(n, data.commands[n], true); });
-        renderFilesList();
-        renderCommandsList();
-        saveMemory(true);
-        termPrint('Impor berhasil.', 'success');
-      } catch(e){ termPrint('Gagal mengimpor: file tidak valid.', 'error'); }
+    const reader=new FileReader();
+    reader.onload=function(){
+      try{
+        const data=JSON.parse(reader.result);
+        if(data.files)Object.assign(PixelLab.files,data.files);
+        if(data.commands)Object.keys(data.commands).forEach(n=>PixelLab.registerCommand(n,data.commands[n],true));
+        if(data.zoomScale)applyZoom(data.zoomScale,false);
+        if(data.devPanelBasis)document.getElementById('devPanel').style.flexBasis=data.devPanelBasis;
+        if(data.activeGameName&&PixelLab.games[data.activeGameName])PixelLab.loadGame(data.activeGameName);
+        renderFilesList();renderCommandsList();updateGameSelector();saveMemory(true);pushHistory('import');
+        termPrint('Impor proyek berhasil.','success');
+      }catch(e){termPrint('Gagal mengimpor: file tidak valid.','error');}
     };
     reader.readAsText(file);
   }
@@ -1250,7 +1580,8 @@ return 'selesai';
     el.innerHTML = '';
     names.forEach(function(name){
       const baseName = name.replace(/\.js$/,'');
-      const hasGame = !!PixelLab.games[baseName];
+      const hasGame = !!PixelLab.games[baseName] ||
+        /PL\.registerGame\(['"]([^'"]+)['"]/.test(PixelLab.files[name]);
       const row = document.createElement('div');
       row.className = 'list-item';
       row.innerHTML =
@@ -1286,7 +1617,15 @@ return 'selesai';
     el.querySelectorAll('[data-load]').forEach(function(b){
       b.addEventListener('click', function(){
         if (b.hasAttribute('disabled')) return;
-        PixelLab.loadGame(b.getAttribute('data-load'));
+        const fileBase = b.getAttribute('data-load');
+        let gameKey = fileBase;
+        if (!PixelLab.games[gameKey]){
+          const src = PixelLab.files[fileBase+'.js'] || '';
+          const m = src.match(/PL\.registerGame\(['"]([^'"]+)['"]/);
+          if (m && PixelLab.games[m[1]]) gameKey = m[1];
+        }
+        if (PixelLab.games[gameKey]) PixelLab.loadGame(gameKey);
+        else termPrint('Game untuk file "'+fileBase+'.js" belum terdaftar.', 'error');
       });
     });
   }
@@ -1296,22 +1635,55 @@ return 'selesai';
     const code = isEdit ? PixelLab.files[existingName] : document.getElementById('template-game').textContent.trim();
     const nameVal = isEdit ? existingName : 'gameBaru.js';
     openModal(
+      '<div class="modal-wide"></div>'
+    );
+    const box = document.getElementById('modalBox');
+    box.classList.add('modal-wide');
+    box.innerHTML =
       '<h3>'+(isEdit?'Ubah File':'Tambah File')+'</h3>'+
       '<label>Nama file<input id="mFileName" value="'+escapeHtml(nameVal)+'"/></label>'+
-      '<label>Kode<textarea id="mFileCode" rows="14">'+escapeHtml(code)+'</textarea></label>'+
+      '<div class="editor-hint">Editor V2: <span class="kbd">Tab</span> indent 2 spasi · <span class="kbd">Ctrl/Cmd+S</span> simpan · <span class="kbd">Esc</span> tutup.</div>'+
+      '<div class="editor-shell"><div class="editor-lines" id="editorLines">1</div><textarea id="mFileCode" class="code-editor" spellcheck="false">'+escapeHtml(code)+'</textarea></div>'+
+      '<div class="editor-footer"><span class="editor-status" id="editorStatus">Siap</span><span class="editor-status">JavaScript</span></div>'+
       '<p class="modal-error hidden" id="mFileError"></p>'+
-      '<div class="modal-actions"><button id="mCancel" class="btn-ghost" type="button">Batal</button><button id="mSave" class="btn-accent" type="button">Simpan</button></div>'
-    );
+      '<div class="modal-actions"><button id="mCancel" class="btn-ghost" type="button">Batal</button><button id="mRun" class="btn-ghost" type="button">▶ Uji</button><button id="mSave" class="btn-accent" type="button">Simpan</button></div>';
+    const ta = document.getElementById('mFileCode');
+    const lines = document.getElementById('editorLines');
+    const status = document.getElementById('editorStatus');
+    function syncLines(){
+      const n = Math.max(1, ta.value.split('\n').length);
+      lines.textContent = Array.from({length:n},(_,i)=>i+1).join('\n');
+      lines.scrollTop = ta.scrollTop;
+      status.textContent = ta.value.length+' karakter · '+n+' baris';
+    }
+    ta.addEventListener('input', syncLines);
+    ta.addEventListener('scroll', ()=>{ lines.scrollTop = ta.scrollTop; });
+    ta.addEventListener('keydown', function(e){
+      if (e.key === 'Tab'){
+        e.preventDefault();
+        const a=ta.selectionStart,b=ta.selectionEnd;
+        ta.value=ta.value.slice(0,a)+'  '+ta.value.slice(b);
+        ta.selectionStart=ta.selectionEnd=a+2; syncLines();
+      }
+      if ((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){
+        e.preventDefault(); document.getElementById('mSave').click();
+      }
+    });
+    syncLines();
     document.getElementById('mCancel').addEventListener('click', closeModal);
+    document.getElementById('mRun').addEventListener('click', function(){
+      const res = runCode(ta.value);
+      if (!res.ok) showModalError('mFileError','Error: '+res.error);
+      else { status.textContent='Uji berhasil dijalankan.'; termPrint('Uji '+(document.getElementById('mFileName').value||'file')+' berhasil.','success'); }
+    });
     document.getElementById('mSave').addEventListener('click', function(){
       const newName = document.getElementById('mFileName').value.trim();
-      const newCode = document.getElementById('mFileCode').value;
-      if (!newName){ showModalError('mFileError', 'Nama file wajib diisi.'); return; }
+      const newCode = ta.value;
+      if (!newName){ showModalError('mFileError','Nama file wajib diisi.'); return; }
       if (isEdit && newName !== existingName) delete PixelLab.files[existingName];
       PixelLab.files[newName] = newCode;
-      renderFilesList();
-      saveMemory();
-      closeModal();
+      pushHistory('file:'+newName);
+      renderFilesList(); saveMemory(); closeModal();
     });
   }
 
@@ -1429,11 +1801,61 @@ return 'selesai';
   /* ======================= GAME SELECTOR / STATS ======================= */
   function updateGameSelector(){
     const sel = document.getElementById('gameSelect');
+    const label = document.getElementById('gameSelectLabel');
+    const list = document.getElementById('gamePickerList');
     if (!sel) return;
     const names = Object.keys(PixelLab.games);
-    sel.innerHTML = names.map(function(n){
+    const seenLabels = new Set();
+    const unique = names.filter(function(n){
+      const gameName = PixelLab.games[n].name || n;
+      if (seenLabels.has(gameName)) return false;
+      seenLabels.add(gameName);
+      return true;
+    });
+    sel.innerHTML = unique.map(function(n){
       return '<option value="'+n+'"'+(n===PixelLab.activeGameName?' selected':'')+'>'+escapeHtml(PixelLab.games[n].name||n)+'</option>';
     }).join('');
+    const activeKey = PixelLab.activeGameName;
+    const activeDef = PixelLab.games[activeKey];
+    if (label) label.textContent = activeDef ? (activeDef.name || activeKey) : 'Select game';
+    if (list){
+      list.innerHTML = unique.map(function(n){
+        const def = PixelLab.games[n] || {};
+        const active = n === activeKey;
+        return '<button class="game-picker-item'+(active?' active':'')+'" type="button" data-game-key="'+escapeHtml(n)+'">'+
+          '<span><span class="game-picker-item-name">'+escapeHtml(def.name||n)+'</span><span class="game-picker-item-meta">'+(active?'currently selected':'ready to play')+'</span></span>'+
+          '<span class="game-picker-radio" aria-hidden="true"></span>'+
+        '</button>';
+      }).join('');
+      list.querySelectorAll('[data-game-key]').forEach(function(item){
+        item.addEventListener('click', function(){
+          const key = item.getAttribute('data-game-key');
+          if (PixelLab.games[key]){
+            PixelLab.loadGame(key);
+            closeGamePicker();
+          }
+        });
+      });
+    }
+  }
+
+  function openGamePicker(){
+    const back = document.getElementById('gamePickerBackdrop');
+    const trigger = document.getElementById('gameSelectButton');
+    if (!back) return;
+    updateGameSelector();
+    back.classList.remove('hidden');
+    back.setAttribute('aria-hidden','false');
+    if (trigger) trigger.setAttribute('aria-expanded','true');
+  }
+
+  function closeGamePicker(){
+    const back = document.getElementById('gamePickerBackdrop');
+    const trigger = document.getElementById('gameSelectButton');
+    if (!back) return;
+    back.classList.add('hidden');
+    back.setAttribute('aria-hidden','true');
+    if (trigger) trigger.setAttribute('aria-expanded','false');
   }
 
   function updateStatsUI(o){
@@ -1473,12 +1895,13 @@ return 'selesai';
   }
 
   /* ======================= BOOT ======================= */
-  let lastT = 0;
+  let lastT = 0, fpsFrames=0, fpsStamp=0;
   function loop(t){
     requestAnimationFrame(loop);
     if (!PixelLab.activeGame) return;
     const dt = lastT ? (t - lastT) : 16;
     lastT = t;
+    fpsFrames++; if(!fpsStamp) fpsStamp=t; if(t-fpsStamp>=1000){ V2.fps=fpsFrames; fpsFrames=0; fpsStamp=t;  }
     if (!PixelLab.paused && PixelLab.activeGame.update) PixelLab.activeGame.update(dt);
     if (PixelLab.activeGame.render) PixelLab.activeGame.render(PixelLab.ctx, PixelLab.canvas);
     if (PixelLab.paused) drawPauseOverlay();
@@ -1581,8 +2004,16 @@ return 'selesai';
     document.addEventListener('click', tryLockLandscape, { once:true });
   }
 
+  function seedCustomGameFiles(){
+    PixelLab.files["pong.js"]="// Pong \u2014 built-in PIXEL LAB\nPL.registerGame('pong',{name:'Pong',width:320,height:240,\ninit(api){this.api=api;this.p={x:12,y:90,w:8,h:60};this.ai={x:300,y:90,w:8,h:60};this.ball={x:160,y:120,vx:150,vy:90};this.score=0;this.aiScore=0;api.setStats({score:0,level:'PONG',lines:0});},\nonAction(a){if(a==='up')this.p.y-=18;if(a==='down')this.p.y+=18;this.p.y=Math.max(0,Math.min(180,this.p.y));},\nupdate(dt){let s=dt/1000,b=this.ball;b.x+=b.vx*s;b.y+=b.vy*s;if(b.y<5||b.y>235)b.vy*=-1;this.ai.y+=(b.y-(this.ai.y+30))*.06;if(b.x<25&&b.x>12&&b.y>this.p.y&&b.y<this.p.y+60&&b.vx<0)b.vx=Math.abs(b.vx)*1.03;if(b.x>292&&b.x<305&&b.y>this.ai.y&&b.y<this.ai.y+60&&b.vx>0)b.vx=-Math.abs(b.vx)*1.03;if(b.x<0){this.aiScore++;this.resetBall(-1)}if(b.x>320){this.score++;this.api.setStats({score:this.score,level:'PONG',lines:this.aiScore});this.resetBall(1)}},\nresetBall(d){this.ball={x:160,y:120,vx:150*d,vy:Math.random()*140-70}},\nrender(ctx,c){ctx.fillStyle='#080808';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#fff';ctx.fillRect(this.p.x,this.p.y,8,60);ctx.fillRect(this.ai.x,this.ai.y,8,60);ctx.fillRect(this.ball.x-5,this.ball.y-5,10,10);ctx.font='18px monospace';ctx.textAlign='center';ctx.fillText(this.score+' : '+this.aiScore,160,25)}});";
+    PixelLab.files["breakout.js"]="// Breakout \u2014 built-in PIXEL LAB\nPL.registerGame('breakout',{name:'Breakout',width:320,height:320,\ninit(api){this.api=api;this.score=0;this.p={x:130,w:60};this.b={x:160,y:260,vx:110,vy:-130};this.bricks=[];for(let r=0;r<5;r++)for(let c=0;c<8;c++)this.bricks.push({x:8+c*38,y:25+r*18,w:34,h:12,on:true});api.setStats({score:0,level:1,lines:0})},\nonAction(a){if(a==='left')this.p.x-=22;if(a==='right')this.p.x+=22;this.p.x=Math.max(0,Math.min(260,this.p.x))},\nupdate(dt){let s=dt/1000,b=this.b;b.x+=b.vx*s;b.y+=b.vy*s;if(b.x<5||b.x>315)b.vx*=-1;if(b.y<5)b.vy*=-1;if(b.y>250&&b.y<280&&b.x>this.p.x&&b.x<this.p.x+60&&b.vy>0){b.vy=-Math.abs(b.vy);b.vx+=(b.x-(this.p.x+30))*2}for(const q of this.bricks)if(q.on&&b.x>q.x&&b.x<q.x+q.w&&b.y>q.y&&b.y<q.y+q.h){q.on=false;b.vy*=-1;this.score+=10;this.api.setStats({score:this.score,level:1,lines:this.bricks.filter(x=>!x.on).length})}if(b.y>330)this.init(this.api)},\nrender(ctx,c){ctx.fillStyle='#080808';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#fff';for(const q of this.bricks)if(q.on)ctx.fillRect(q.x,q.y,q.w,q.h);ctx.fillRect(this.p.x,275,60,8);ctx.fillRect(this.b.x-5,this.b.y-5,10,10)}});";
+    PixelLab.files["flappy.js"]="// Flappy \u2014 built-in PIXEL LAB\nPL.registerGame('flappy',{name:'Flappy',width:288,height:360,\ninit(api){this.api=api;this.bird={x:65,y:180,vy:0};this.pipes=[];this.t=0;this.score=0;this.over=false;api.setStats({score:0,level:'FLAP',lines:0})},\nonAction(a){if(a==='up'||a==='a'){if(this.over)this.init(this.api);else this.bird.vy=-220}},\nupdate(dt){if(this.over)return;let s=dt/1000;this.bird.vy+=620*s;this.bird.y+=this.bird.vy*s;this.t+=dt;if(this.t>1450){this.t=0;let gap=105,top=35+Math.random()*130;this.pipes.push({x:288,top,bot:top+gap,passed:false})}for(const p of this.pipes){p.x-=110*s;if(!p.passed&&p.x<55){p.passed=true;this.score++;this.api.setStats({score:this.score,level:'FLAP',lines:0})}if(55>p.x-16&&55<p.x+42&&(this.bird.y-10<p.top||this.bird.y+10>p.bot))this.over=true}this.pipes=this.pipes.filter(p=>p.x>-50);if(this.bird.y<0||this.bird.y>360)this.over=true},\nrender(ctx,c){ctx.fillStyle='#080808';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#fff';for(const p of this.pipes){ctx.fillRect(p.x,0,42,p.top);ctx.fillRect(p.x,p.bot,42,c.height-p.bot)}ctx.fillRect(45,this.bird.y-8,20,16)}});";
+    PixelLab.files["space-shooter.js"]="// Space Shooter \u2014 built-in PIXEL LAB\nPL.registerGame('shooter',{name:'Space Shooter',width:320,height:360,\ninit(api){this.api=api;this.ship={x:150,y:320};this.bullets=[];this.enemies=[];this.t=0;this.score=0;api.setStats({score:0,level:1,lines:0})},\nonAction(a){if(a==='left')this.ship.x-=20;if(a==='right')this.ship.x+=20;if(a==='a')this.bullets.push({x:this.ship.x+10,y:this.ship.y-8})},\nupdate(dt){let s=dt/1000;this.ship.x=Math.max(0,Math.min(300,this.ship.x));this.t+=dt;if(this.t>650){this.t=0;this.enemies.push({x:10+Math.random()*280,y:-20,v:60+Math.random()*70})}for(const b of this.bullets)b.y-=320*s;for(const e of this.enemies)e.y+=e.v*s;for(const b of this.bullets)for(const e of this.enemies)if(Math.abs(b.x-e.x)<15&&Math.abs(b.y-e.y)<15){b.dead=true;e.dead=true;this.score+=10;this.api.setStats({score:this.score,level:1,lines:0})}this.bullets=this.bullets.filter(b=>b.y>-20&&!b.dead);this.enemies=this.enemies.filter(e=>e.y<380&&!e.dead)},\nrender(ctx,c){ctx.fillStyle='#080808';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#fff';for(const b of this.bullets)ctx.fillRect(b.x,b.y,3,10);for(const e of this.enemies)ctx.fillRect(e.x,e.y,18,18);ctx.beginPath();ctx.moveTo(this.ship.x+10,this.ship.y);ctx.lineTo(this.ship.x,this.ship.y+22);ctx.lineTo(this.ship.x+20,this.ship.y+22);ctx.closePath();ctx.fill()}});\nPL.registerGame('space-shooter',PixelLab.games.shooter);";
+  }
+
   function restoreFromMemory(){
     const mem = loadMemory();
+    seedCustomGameFiles();
     if (!mem){
       PixelLab.files['snake.js'] = document.getElementById('starter-snake').textContent.trim();
       PixelLab.files['crazy-colors.js'] = document.getElementById('starter-colors').textContent.trim();
@@ -1613,6 +2044,58 @@ return 'selesai';
     };
   }
 
+
+  function setupWebSettings(){
+    const music=document.getElementById('bgMusic');
+    const musicPlayerRange=document.getElementById('musicVolume');
+    const br=document.getElementById('brightnessRange');
+    const brVal=document.getElementById('brightnessValue');
+    const mr=document.getElementById('settingsMusicRange');
+    const mrVal=document.getElementById('settingsMusicValue');
+    const gr=document.getElementById('settingsGameRange');
+    const grVal=document.getElementById('settingsGameValue');
+    const overlay=document.getElementById('brightnessOverlay');
+    function setBrightness(v){
+      v=Number(v)||100;
+      if(overlay) overlay.style.opacity=v<100 ? ((100-v)/100*.55) : ((v-100)/100*.22);
+      if(brVal) brVal.value=v+'%';
+      if(brVal) brVal.textContent=v+'%';
+    }
+    function setMusic(v){
+      v=Number(v); if(music) music.volume=v;
+      if(musicPlayerRange) musicPlayerRange.value=v;
+      if(mrVal) mrVal.textContent=Math.round(v*100)+'%';
+    }
+    function setGame(v){
+      V2.gameVolume=Number(v);
+      if(grVal) grVal.textContent=Math.round(V2.gameVolume*100)+'%';
+    }
+    br?.addEventListener('input',e=>setBrightness(e.target.value));
+    mr?.addEventListener('input',e=>setMusic(e.target.value));
+    gr?.addEventListener('input',e=>setGame(e.target.value));
+    musicPlayerRange?.addEventListener('input',e=>{setMusic(e.target.value); if(mr)mr.value=e.target.value;});
+    setBrightness(br?.value||100); setMusic(mr?.value||.45); setGame(gr?.value||1);
+  }
+
+  function setupV2(){
+    V2.theme='dark';
+    document.getElementById('undoBtn')?.addEventListener('click',()=>V2.undo());
+    document.getElementById('redoBtn')?.addEventListener('click',()=>V2.redo());
+    document.getElementById('resetLayoutBtn')?.addEventListener('click',resetLayout);
+    document.getElementById('resetLayoutBtn2')?.addEventListener('click',resetLayout);
+    document.getElementById('restartGameBtn')?.addEventListener('click',()=>BUILTINS.restart('restart'));
+    document.getElementById('statsBtn')?.addEventListener('click',()=>{
+      V2.showDebug=!V2.showDebug;termPrint(V2.showDebug?'Debug ON: FPS ditampilkan.':'Debug OFF.','info');
+    });
+    document.getElementById('exportProjectBtn')?.addEventListener('click',exportFiles);
+    document.addEventListener('keydown',e=>{
+      if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!e.shiftKey){e.preventDefault();V2.undo();}
+      else if((e.ctrlKey||e.metaKey)&&(e.key.toLowerCase()==='y'||(e.key.toLowerCase()==='z'&&e.shiftKey))){e.preventDefault();V2.redo();}
+    });
+    V2.commit('boot');
+    updateHistoryButtons();
+  }
+
   function init(){
     setupTabs();
     setupTerminal();
@@ -1620,6 +2103,8 @@ return 'selesai';
     setupOrientationAndFullscreen();
     setupZoomControls();
     setupPinchZoom();
+    setupWebSettings();
+    setupV2();
 
     PixelLab.canvas = document.getElementById('gameCanvas');
     PixelLab.ctx = PixelLab.canvas.getContext('2d');
@@ -1629,7 +2114,12 @@ return 'selesai';
       canvas: PixelLab.canvas, ctx: PixelLab.ctx,
       nextCanvas: PixelLab.nextCanvas, nextCtx: PixelLab.nextCtx,
       log: function(m,t){ PixelLab.log(m,t); },
-      setStats: function(o){ updateStatsUI(o); }
+      setStats: function(o){ updateStatsUI(o); },
+      drawText: function(text,x,y,opts){ const c=PixelLab.ctx; opts=opts||{}; c.save(); c.fillStyle=opts.color||'#e9e9ee'; c.font=opts.font||'12px monospace'; c.textAlign=opts.align||'left'; c.fillText(String(text),x,y); c.restore(); },
+      random: function(min,max){ return Math.random()*(max-min)+min; },
+      clamp: function(v,min,max){ return Math.max(min,Math.min(max,v)); },
+      beep: function(freq,duration){ V2.beep(freq,duration); },
+      clear: function(color){ PixelLab.ctx.fillStyle=color||'#15161a'; PixelLab.ctx.fillRect(0,0,PixelLab.canvas.width,PixelLab.canvas.height); }
     };
 
     PixelLab.registerGame('tetris', TetrisGame);
@@ -1654,7 +2144,12 @@ return 'selesai';
     renderControllersList();
     updateGameSelector();
 
-    document.getElementById('gameSelect').addEventListener('change', function(e){ PixelLab.loadGame(e.target.value); });
+    document.getElementById('gameSelectButton').addEventListener('click', openGamePicker);
+    document.getElementById('gamePickerClose').addEventListener('click', closeGamePicker);
+    document.getElementById('gamePickerBackdrop').addEventListener('click', function(e){
+      if (e.target.id === 'gamePickerBackdrop') closeGamePicker();
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeGamePicker(); });
     document.getElementById('addFileBtn').addEventListener('click', function(){ openFileModal(); });
     document.getElementById('addCommandBtn').addEventListener('click', function(){ openCommandModal(); });
     document.getElementById('addControllerBtn').addEventListener('click', openControllerModal);
@@ -1680,33 +2175,68 @@ return 'selesai';
     termPrint('Coba buka tab Files, jalankan "snake.js", lalu pilih Snake di dropdown Game untuk mengganti Tetris.', 'info');
     termPrint('Buat perintah terminal sendiri lewat tab Commands, atau ketik: addcmd halo PL.log("hai!")', 'info');
     if (loadMemory()) termPrint('Data sebelumnya dipulihkan dari memory perangkat ini.', 'success');
+    V2.commit('ready');
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+
+  function setupLoadingAndMusic(){
+    const overlay=document.getElementById('pixelLoading');
+    const music=document.getElementById('bgMusic');
+    const play=document.getElementById('musicPlayBtn');
+    const state=document.getElementById('musicState');
+    const volume=document.getElementById('musicVolume');
+
+    if(music)music.volume=.45;
+    if(volume)volume.addEventListener('input',()=>{music.volume=Number(volume.value)});
+
+    function startMusic(){
+      if(!music)return;
+      const p=music.play();
+      if(p&&p.then)p.then(()=>{
+        if(play)play.textContent='Ⅱ';
+        if(state)state.textContent='playing';
+      }).catch(()=>{
+        if(state)state.textContent='tap to play';
+      });
+    }
+
+    if(play)play.addEventListener('click',()=>{
+      if(music.paused){startMusic();}
+      else{
+        music.pause();
+        play.textContent='▶';
+        if(state)state.textContent='paused';
+      }
+    });
+
+    function finish(){
+      if(!overlay)return;
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-busy','false');
+      setTimeout(()=>overlay.remove(),550);
+      document.removeEventListener('pointerdown',finish,true);
+    }
+
+    function begin(){
+      if(!overlay)return;
+      overlay.classList.add('show');
+      // Keep the screen intentionally minimal while the core finishes initializing.
+      setTimeout(finish,1100);
+    }
+
+    if(window.matchMedia('(orientation:portrait)').matches){
+      const wait=()=>window.matchMedia('(orientation:portrait)').matches?setTimeout(wait,250):begin();
+      wait();
+    }else begin();
+
+    // Music is still user-gesture friendly: load screen can disappear normally,
+    // while any tap can unlock playback on browsers that block autoplay.
+    document.addEventListener('pointerdown',startMusic,{once:true,passive:true});
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){init();setupLoadingAndMusic();});
 
   window.PixelLab = PixelLab;
-})();
-</script>
-<div class="mini-audio-player" id="miniAudioPlayer">
-  <button type="button" class="map-btn" id="miniAudioToggle" aria-label="Play/Pause">▶</button>
-  <span class="map-title">bye-ariana grande</span>
-  <audio id="miniAudioEl" src="https://files.catbox.moe/1h0sh0.mp3" preload="none" loop></audio>
-</div>
-<script>
-(function(){
-  var audio = document.getElementById('miniAudioEl');
-  var btn = document.getElementById('miniAudioToggle');
-  if (!audio || !btn) return;
-  btn.addEventListener('click', function(){
-    if (audio.paused){
-      audio.play().then(function(){ btn.textContent = '⏸'; }).catch(function(){});
-    } else {
-      audio.pause();
-      btn.textContent = '▶';
-    }
-  });
-  audio.addEventListener('pause', function(){ btn.textContent = '▶'; });
-  audio.addEventListener('play', function(){ btn.textContent = '⏸'; });
 })();
 </script>
 </body>
